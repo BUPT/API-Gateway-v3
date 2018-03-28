@@ -1,3 +1,17 @@
+export interface AtomApiInfo {
+	module_id: string,
+	type: string,
+	name: string,
+	api_id: string,
+	argument: string,
+	response: string,
+	URL: string,
+	is_async: string,
+	condition: string,
+    combination_url: string,
+    method: string
+
+}
 /**
  * 定义combiantion表的模型
  */
@@ -15,7 +29,8 @@ class CombinationModel {
             URL: String,
             is_async: String, 
             condition: String,
-            combination_url: String
+            combination_url: String,
+            method: String
         });
     }
 
@@ -27,11 +42,11 @@ class CombinationModel {
         this._combination = value;
     }
     // 查找数据
-    public async query(data: { [key: string]: string }, callback: (err: Error, results: { [key: string]: string }[]) => void): Promise<void>{
+    public async query(data: { [key: string]: string | string[]}, callback: (err: Error, results: { [key: string]: string }[]) => void): Promise<void>{
         this._combination.find(data, callback);
     }
     // 插入多条数据
-    public async insert(data: { [key: string]: string }[], callback: (err: Error) => void): Promise<void> {
+    public async insert(data: AtomApiInfo[], callback: (err: Error) => void): Promise<void> {
         this._combination.create(data, callback);
     }
 
@@ -41,8 +56,8 @@ class CombinationModel {
     }
 
     // 更改数据
-    public async update(condition: { [key: string]: string }, data: string, eachCallback: (combination: {[key: string]: string}) => void, saveCallback: (err: Error) => void): Promise<void> {
-        this._combination.find(condition).each(eachCallback).save(saveCallback);
+    public async update(condition: { [key: string]: string }, data: { [key: string]: string }, callback: (err:Error, data: any) => void): Promise<void>{
+        this._combination.find(condition, callback);
     }
 }
 

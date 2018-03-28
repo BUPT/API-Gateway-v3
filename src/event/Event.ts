@@ -1,62 +1,19 @@
 /**
- * @author: 林贻民
- * @description: 使用单例设计模式实现全局事件机制
- * 
+ * 使用单例设计模式完成事件订阅发布
  */
 
-import { EventEmitter } from "events";
-import { APPEvent } from "./APPEvent";
+import {EventEmitter} from "events";
 
-
-class NotifyEvent implements APPEvent{
-    public static readonly notifyEvent: NotifyEvent = new NotifyEvent();
-
-    private eventEmitter: EventEmitter = new EventEmitter();
-
-    private NotifyEvent(){
-
+export class Event extends EventEmitter{
+    private static event: Event = null;
+    private constructor(){
+        super();
     }
 
-    event : string;
-
-    public setEvent(event: string): void{
-        this.event = event;
-    }
-
-    public getEvent(): string{
-        return this.event;
-    }
-
-    data: any;
-
-    public setData(data : any){
-        this.data = data;
-    }
-
-    public getData(): any{
-        return this.data;
-    }
-
-    public handler(arg1?: any, arg2?: any, arg3?: any): void{
-        
-    }
-    /**
-     * 发布事件
-     * @param appEvent 
-     */
-    public publish(appEvent: APPEvent): void{
-        if(appEvent.data !== undefined){
-            this.eventEmitter.emit(appEvent.event, appEvent.data);
-        }else{
-            this.eventEmitter.emit(appEvent.event);
+    public static getEvent(): Event{
+        if(this.event === null){
+            this.event = new Event();
         }
-    }
-
-    public subscribe(appEvent: APPEvent):void{
-        this.eventEmitter.on(appEvent.event, appEvent.handler);
-    }
-
-    public unSubscribe(appEvent: APPEvent): void{
-        this.eventEmitter.removeAllListeners(appEvent.event);
+        return this.event;
     }
 }

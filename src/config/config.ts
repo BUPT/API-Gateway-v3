@@ -1,10 +1,11 @@
+import * as path from "path";
 class Config{
-    private _baseDir = "/home/api-gateway/api-gateway";
+    private _baseDir = path.join(__dirname, "../../");
     private _storage = {
-        "host": '111.207.243.66',
-        "user": 'root',
-        "password": 'A123456',
-        "database": 'api_gateway',
+        "host": '******',
+        "user": '******',
+        "password": '******',
+        "database": '******',
         "protocol": "mysql",
         "port": "3306"
     };

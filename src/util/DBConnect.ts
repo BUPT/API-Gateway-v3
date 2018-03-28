@@ -32,6 +32,7 @@ class DBConnect{
             let opts = {
                 host: storage.host,
                 database: storage.database,
+                user: storage.user,
                 password: storage.password,
                 protocol: storage.protocol,
                 port: storage.port,

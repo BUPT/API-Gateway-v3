@@ -4,7 +4,6 @@ let router = express.Router();
 import {AdminPlugin} from "../plugin/AdminPlugin";
 import {UserPlugin} from "../plugin/UserPlugin";
 import {RegisterPlugin} from "../plugin/RegisterPlugin";
-import { CombinationUrlPlugin } from "../plugin/CombinationUrlPlugin";
 import { Config } from "../config/config";
 
 import {CombinationPlugin} from "../plugin/CombinationPlugin";
@@ -22,7 +21,6 @@ class AdminRouter{
         let adminPlugin: AdminPlugin = new AdminPlugin();
         let userPlugin: UserPlugin = new UserPlugin();
         let registerPlugin: RegisterPlugin = new RegisterPlugin();
-        let combinationUrlPlugin: CombinationUrlPlugin = new CombinationUrlPlugin();
 
         let combinationPlugin: CombinationPlugin = new CombinationPlugin();
 
@@ -500,8 +498,6 @@ class AdminRouter{
         // 静态页面
         this._router.use("/static", express.static(config.getPath().static));
 
-        // 组合API
-        this._router.post("/combination/getFlowXML", combinationUrlPlugin.getFloWXMLFile);
         /**
          * @swagger
          * /apis/getAllAPI:
@@ -636,29 +632,6 @@ class AdminRouter{
          */
         this._router.get("/apis/debugAPI", adminPlugin.debugAPI);
 
-        /**
-         * @swagger
-         * /apis/getCombinationApiFlowXml:
-         *   get:
-         *       description: 获取组合API的流程xml文件
-         *       deprecated: false
-         *       tags:
-         *           - "组合API管理"
-         *       parameters:
-         *         - name: url
-         *           in: query
-         *           description: 组合API对应的url
-         *           required: true
-         *           type: string
-         *       produces:
-         *         - application/json
-         *       responses:
-         *         200:
-         *           description:OK
-         */
-        this._router.get("/apis/getCombinationApiFlowXml", combinationUrlPlugin.getFlowData);
-
-
 
         /**
          * @swagger
@@ -750,6 +723,22 @@ class AdminRouter{
          */
         this._router.get("/apis/getAtomApiInfo", combinationPlugin.getAtomApiInfo);
 
+        /**
+         * @swagger
+         * /apis/getAllAtomApiArgument:
+         *   get:
+         *       description: 获取组合API的原子API的参数信息
+         *       deprecated: false
+         *       tags:
+         *           - "组合API管理"
+         *       produces:
+         *         - application/json
+         *       responses:
+         *         200:
+         *           description:OK
+         */
+        this._router.get("/apis/getAllAtomApiArgument", combinationPlugin.getAllAtomApiArgument)
+
 
         /**
          * @swagger
@@ -764,6 +753,11 @@ class AdminRouter{
          *           in: query
          *           description: 组合API对应的url
          *           required: true
+         *           type: string
+         *         - name: method
+         *           in: query
+         *           description: 组合API的请求方法
+         *           required: false
          *           type: string
          *         - name: name
          *           in: query
@@ -797,15 +791,76 @@ class AdminRouter{
          *           description:OK
          */
         this._router.post("/apis/registerCombinationAPI", combinationPlugin.registerCombinationAPI);
-        this._router.get("/call", combinationPlugin.publish);
 
 
 
 
         /**
          * @swagger
-         * /project/addProject:
+         * /apis/getCombinationAPIFlow:
          *   get:
+         *       description: 获取组合API的流程树信息
+         *       deprecated: false
+         *       tags:
+         *           - "组合API管理"
+         *       parameters:
+         *         - name: combinationUrl
+         *           in: query
+         *           description: 组合API对应的url
+         *           required: true
+         *           type: string
+         *         - name: publisher
+         *           in: query
+         *           description: 组合API的发布者
+         *           required: false
+         *           type: string
+         *       produces:
+         *         - application/json
+         *       responses:
+         *         200:
+         *           description:OK
+         */
+        this._router.get("/apis/getCombinationAPIFlow", combinationPlugin.getCombinationAPIFlow);
+
+        /**
+         * @swagger
+         * /voicePlatform/notify:
+         *   post:
+         *       description: 语音平台通知API网关相关事件发生的地址
+         *       deprecated: false
+         *       tags:
+         *           - "事件通知"
+         *       consumes:
+         *           - application/json
+         *       parameters:
+         *         - in: body
+         *           name: NotifyEvent
+         *           description: 通知网关发生事件的相关参数
+         *           schema:
+         *             type: object
+         *             properties:
+         *               callEvent:
+         *                 type: object
+         *                 required:
+         *                   - notifyEvent
+         *                 properties:
+         *                   event: 
+         *                     type: string
+         * 
+         *       produces:
+         *         - application/json
+         *       responses:
+         *         200:
+         *           description:OK
+         */
+        this._router.post("/voicePlatform/notify", combinationPlugin.notify)
+
+
+
+        /**
+         * @swagger
+         * /project/addProject:
+         *   post:
          *       description: 添加一个项目
          *       deprecated: false
          *       tags:
@@ -832,12 +887,12 @@ class AdminRouter{
          *         200:
          *           description:OK
          */
-        this._router.get("/project/addProject", adminPlugin.addProject);
+        this._router.post("/project/addProject", adminPlugin.addProject);
 
         /**
          * @swagger
          * /project/editProject:
-         *   get:
+         *   post:
          *       description: 添加一个项目
          *       deprecated: false
          *       tags:
@@ -869,7 +924,7 @@ class AdminRouter{
          *         200:
          *           description:OK
          */
-        this._router.get("/project/editProject", adminPlugin.editProject);
+        this._router.post("/project/editProject", adminPlugin.editProject);
 
 
         /**
@@ -903,7 +958,29 @@ class AdminRouter{
          * @swagger
          * /project/queryProject:
          *   get:
-         *       description: 根据项目名称查找项目信息
+         *       description: 根据项目名称查找项目信息，项目名称不存在，则查询全部项目信息，否则查询指定项目信息
+         *       deprecated: false
+         *       tags:
+         *           - "项目管理"
+         *       parameters:
+         *         - name: projectName
+         *           in: query
+         *           description: 需要查找的项目名称
+         *           required: false
+         *           type: string
+         *       produces:
+         *         - application/json
+         *       responses:
+         *         200:
+         *           description:OK
+         */
+        this._router.get("/project/queryProject", adminPlugin.queryProject);
+
+        /**
+         * @swagger
+         * /project/queryAPIByProjectName:
+         *   get:
+         *       description: 根据项目名称查找其项下的API信息
          *       deprecated: false
          *       tags:
          *           - "项目管理"
@@ -919,7 +996,7 @@ class AdminRouter{
          *         200:
          *           description:OK
          */
-        this._router.get("/project/queryProject", adminPlugin.queryProject);
+        this._router.get("/project/queryAPIByProjectName", adminPlugin.queryAPIByProjectName);
     }
 }
 export{AdminRouter};

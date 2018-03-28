@@ -35,6 +35,8 @@ node_modules
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
+build
+
 # Dependency directories
 jspm_packages/
 
@@ -66,3 +68,9 @@ typings/
 req
 
 sftp.json
+
+views
+test
+.vscode
+
+performanceFile

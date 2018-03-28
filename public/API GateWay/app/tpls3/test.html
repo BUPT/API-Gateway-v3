@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <script type="text/javascript" src="./jquery-3.2.1.min.js"></script>
+      <form id = "uploadForm">
+        <div class="field required">
+          <label>项目名</label>
+          <input placeholder="项目名" type="text" name="projectName">
+        </div>
+        <div class="field required">
+          <label>项目信息简介</label>
+          <input placeholder="项目信息简介" type="text" name="projectDescription">
+        </div>
+        <div class="field required">
+          <label>发布者姓名</label>
+          <input placeholder="发布者姓名" type="text" name="publisher">
+        </div>
+        <div class="field required">
+          <label>项目logo</label>
+          <input type="file" name="avatar" multiple>
+        </div>
+        <input type="button" value="上传" onclick="doUpload()" />  
+      </form>
+
+      <script type="text/javascript">
+        function doUpload() {  
+          var formData = new FormData($( "#uploadForm" )[0]);  
+          $.ajax({  
+                url: 'http://www.linyimin.club:8001/project/addProject' ,  
+                type: 'POST',  
+                data: formData,  
+                async: false,  
+                cache: false,  
+                contentType: false,  
+                processData: false,  
+                success: function (returndata) {  
+                    alert(returndata.result);  
+                },  
+                error: function (returndata) {  
+                    alert(returndata);  
+                }  
+      });  
+}  
+    </script>
+      </body>   
+</html>>
+  

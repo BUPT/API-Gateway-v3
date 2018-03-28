@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html ng-app="check">
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../css/bootstrap-3.0.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../css/abilitywatch.css" />
+		<link rel="stylesheet" href="../css/app.min.css">
+		<script src="../js/jquery-3.2.1.js"></script>
+		<script src="../js/echarts.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<script src="../js/angular-1.3.0.js"></script>
+		<script src="../js/ngDialog.js"></script>
+		<script src="../js/ionic.bundle.min.js"></script>
+		<script src="../controlller.js"></script>
+		<script src="../app.js"></script>
+		<style>
+			#logout{
+				margin-right: 60px;
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<!--<button id="logout" ng-controller="checkCtrl" class="btn-floating btn-large waves-effect waves-light right" ng-click="logout()">注销</button>-->
+			<div class="row first">
+				<div class="top col-sm-4 col-md-4 col-lg-4">	
+					<div id="totalvisit"></div>
+				</div>
+				<div class="top col-sm-4 col-md-4 col-lg-4">
+					<div id="unitvisit"></div>
+				</div>
+				<div class="top col-sm-4 col-md-4 col-lg-4">
+					<div id="concurrence"></div>
+				</div>
+			</div>
+			<div class="row second">
+				<div class="bottom col-sm-4 col-md-4 col-lg-4">
+					<div id="averagetime"></div>
+				</div>
+				<div class="bottom col-sm-4 col-md-4 col-lg-4">
+					<div id="CPUuse"></div>
+				</div>
+				<div class="bottom col-sm-4 col-md-4 col-lg-4">
+					<div id="memoryuse"></div>
+				</div>
+			</div>
+		</div>
+		<script>
+			 //总访问次数
+			 //设置完其它的样式，显示一个空的直角坐标轴，然后获取数据后填入数据
+		    var myChart1 = echarts.init(document.getElementById('totalvisit'));
+
+				//显示加载动画
+				myChart1.showLoading();
+
+					//隐藏加载动画
+				myChart1.hideLoading();
+			    // 填入数据
+			    option1={
+			    	 title: {
+				        text: '总访问次数',
+				        left:'center'
+				    },
+				    tooltip: {},
+				    legend: {
+				        data:['总访问次数'],
+				        top:'25px'
+				    },
+				    toolbox: {
+					        show : true,
+					        left:'275px',
+					        feature : {
+					        mark : {show: true},
+					        dataView : {show: true, readOnly: false},
+					        magicType : {show: true, type: ['line', 'bar']},
+					        restore : {show: true},
+					        saveAsImage : {show: true}
+					    }
+				    },
+			        xAxis: [{
+			        	type: 'category',
+				    	name:'时间 /天',
+			            data: (function(){
+							var myDate = new Date(); //获取今天日期
+							myDate.setDate(myDate.getDate() - 6);
+							var dateArray = []; 
+							var dateTemp; 
+							var flag = 1; 
+							for (var i = 0; i < 7; i++) {
+							    dateTemp = (myDate.getMonth()+1)+"/"+myDate.getDate();
+							    dateArray.push(dateTemp);
+							    myDate.setDate(myDate.getDate() + flag);
+							}
+							return dateArray;
+				    	})()				   
+			          }],
+			        yAxis: {
+					   name: '总访问次数'
+					},
+			        series: [{
+			            type: 'bar',
+			            // 根据名字对应到相应的系列
+			            name: '总访问次数',
+			            //data是一个数组
+			            data: (function(){
+			            var totalcount=[];
+			  			$.ajax({
+							type:'GET',
+							url:'http://www.linyimin.club:8001/viewTopPerformance',
+							dataType:'JSON',
+							async:false,
+							data:{},
+							crossDomain: true,
+							success:function(data){
+								//alert(data._datum._totleVisitList[0]);
+								for(var i=0;i<7;i++){
+									totalcount[i]=data._datum._totleVisitList[6-i];
+								}
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                        console.log(XMLHttpRequest.status);
+	                        console.log(XMLHttpRequest.readyState);
+	                        console.log(textStatus); 
+				            }	
+						 }) 
+						 return totalcount;
+			            })()
+			        }]
+			    };
+			    //每隔半小时刷新一次
+			    myChart1.setOption(option1);
+			    setInterval(function(){
+			    	var currentday=(new Date().getMonth()+1)+"/"+new Date().getDate();
+			    
+			    	var data0 = option1.series[0].data;
+	                var data0=function(){
+			    		var totalcount=[];
+			  			$.ajax({
+							type:'GET',
+							url:'http://www.linyimin.club:8001/viewTopPerformance',
+							dataType:'JSON',
+							async:false,
+							data:{},
+							crossDomain: true,
+							success:function(data){
+								//alert(data._datum._totleVisitList[0]);
+								for(var i=0;i<7;i++){
+									totalcount[i]=data._datum._totleVisitList[6-i];
+								}
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {
+	                        console.log(XMLHttpRequest.status);
+	                        console.log(XMLHttpRequest.readyState);
+	                        console.log(textStatus); 
+				            }	
+						 }) 
+						 return totalcount;
+                    }();
+	               
+
+			    	if(option1.xAxis[0].data[6]!=currentday){
+			    		//删掉数组中第一个数据，最新数据填充最后一个数据
+			    		option1.xAxis[0].data.shift();
+			    	    option1.xAxis[0].data.push(currentday);
+			    	}		
+			    	myChart1.setOption(option1);
+			    },1000*10);
+			    
+			    //单位时间访问次数
+		  var myChart2=echarts.init(document.getElementById('unitvisit'));
+			option2={
+				 title: {
+			        text: '单位时间访问次数',
+			        left:'100px'
+			    },
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            type: 'shadow'
+			        }
+			    },
+			    legend: {
+			        data:['单位时间访问次数'],
+			        top:'25px'
+			    },
+			    toolbox: {
+				        show : true,
+				        left:'260px',
+				        feature : {
+				            mark : {show: true},
+				            dataView : {show: true, readOnly: false},
+				            magicType : {show: true, type: ['line', 'bar']},
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				   },
+			    yAxis: [{
+			        type: 'category',
+			        name:'时间 /时',
+			        data: (function(){
+			        	var myDate = new Date(); //获取今天日期
+						myDate.setHours(myDate.getHours() - 11);
+						var dateArray = []; 
+						var dateTemp; 
+						var flag = 1; 
+						for (var i = 0; i < 12; i++) {
+						    dateTemp = (myDate.getHours()+":00");
+						    dateArray.push(dateTemp);
+						    myDate.setHours(myDate.getHours() + flag);
+						}
+						return dateArray;
+			        })()
+			    }],
+			    xAxis: {
+			        type: 'value',
+			        name:'次数',
+			        boundaryGap: [0, 0.01]
+			    },
+			    series: [{
+			    	name: '单位时间访问次数',
+			        type: 'bar',
+			        data: (function(){
+			        	var unitcount=[];
+			        	$.ajax({
+			        		type:"get",
+			        		url:"http://www.linyimin.club:8001/viewTopPerformance",
+			        		async:false,
+			        		dataType:'JSON',
+			        		data:{},
+			        		crossDomain:true,
+			        		success:function(data){
+			        			for(var i=0;i<12;i++){
+			        				unitcount[i]=data._datum._unitTimeTotleVisitList[11-i];
+			        			}
+			        		},
+			        		error:function(XMLHttpRequest,textStatus,errorThrown){
+			        			console.log(XMLHttpRequest.status);
+			        			console.log(XMLHttpRequest.readyState);
+			        			console.log(textStatus);
+			        		}
+			        	});
+			        	return unitcount;
+			        })()
+			    }]
+			};
+			myChart2.setOption(option2);
+			
+			setInterval(function(){
+				var currentHour=(new Date().getHours()+":00");
+				var data0=option2.series[0].data;
+				var data0=function(){
+					var unitcount=[];
+			        	$.ajax({
+			        		type:"get",
+			        		url:"http://www.linyimin.club:8001/viewTopPerformance",
+			        		async:false,
+			        		dataType:'JSON',
+			        		data:{},
+			        		crossDomain:true,
+			        		success:function(data){
+			        			for(var i=0;i<12;i++){
+			        				unitcount[i]=data._datum._unitTimeTotleVisitList[11-i];
+			        			}
+			        		},
+			        		error:function(XMLHttpRequest,textStatus,errorThrown){
+			        			console.log(XMLHttpRequest.status);
+			        			console.log(XMLHttpRequest.readyState);
+			        			console.log(textStatus);
+			        		}
+			        	});
+			        	return unitcount;
+				}();
+				
+				if(option2.yAxis[0].data[11]!=currentHour){
+			    		//删掉数组中第一个数据，最新数据填充最后一个数据
+			    		option2.yAxis[0].data.shift();
+			    	    option2.yAxis[0].data.push(currentHour);
+			    }		
+				myChart2.setOption(option2);
+			},1000*60)
+			
+			//并发量
+			var myChart3=echarts.init(document.getElementById("concurrence"));
+			option3 = {
+		    title: {
+		        text: '当前并发量',
+		        left:'center',
+		    },
+		    tooltip: {
+		        trigger: 'axis',
+		        axisPointer: {
+		            type: 'cross',
+		            label: {
+		                backgroundColor: '#283b56'
+		            }
+		        }
+		    },
+		    legend: {
+		        data:['当前并发量'],
+		        top:'30px',
+		    },
+		    toolbox: {
+		        show: true,
+		        left:"280px",
+		        feature: {
+		            dataView: {readOnly: false},
+		            restore: {},
+		            saveAsImage: {}
+		        }
+		    },
+		    dataZoom: {
+		        show: false,
+		        start: 0,
+		        end: 100
+		    },
+		    xAxis: [
+		        {
+		        	name:'时间',
+		            type: 'category',
+		            boundaryGap: true,
+		            data: (function (){
+		                var now = new Date();
+		                //alert(now.toLocaleTimeString());
+		                var res = [];
+		                var len = 10;
+		                while (len>0) {
+		                    res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
+		                    now = new Date(now - 2000);	  
+		                    len--;
+		                }
+		                return res;
+		            })()
+		        }
+		    ],
+		    yAxis: [
+		        {
+		            type: 'value',
+		            scale: true,
+		            name: '并发量',
+//		            max: 30,
+//		            min: 0,
+		            boundaryGap: [0.2, 0.2]
+		        },
+		    ],
+		    series: [
+		        {
+		            name:'当前并发量',
+		            type:'line',
+		            data:[]
+//		            (function (){
+//		                var res = [];
+//		                var len = 0;
+//		                while (len < 10) {
+//		                    res.push((Math.random()*10 + 5).toFixed(1) - 0);
+//		                    len++;
+//		                }
+//		                return res;
+//		            })()
+		        }
+		    ]
+		};
+//		myChart.setOption(option);
+		
+		setInterval(function(){
+		    axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+		
+		    var data0 = option3.series[0].data;
+		    for(var i=0;i<10;i++){
+		        data0.push(function(){
+		    		var concurrence;
+		    			$.ajax({
+			        		type:"get",
+			        		url:"http://www.linyimin.club:8001/viewTopPerformance",
+			        		async:false,
+			        		dataType:'JSON',
+			        		data:{},
+			        		crossDomain:true,
+			        		success:function(data){
+			        			concurrence = data._datum._concurrentVolume;
+			        		},
+			        		error:function(XMLHttpRequest,textStatus,errorThrown){
+			        			console.log(XMLHttpRequest.status);
+			        			console.log(XMLHttpRequest.readyState);
+			        			console.log(textStatus);
+			        		}
+			        });
+			       return concurrence;
+		    	}());
+		    }
+		    
+		    data0.shift();
+		    data0.push(function(){
+		    		var concurrence;
+		    			$.ajax({
+			        		type:"get",
+			        		url:"http://www.linyimin.club:8001/viewTopPerformance",
+			        		async:false,
+			        		dataType:'JSON',
+			        		data:{},
+			        		crossDomain:true,
+			        		success:function(data){
+			        			concurrence = data._datum._concurrentVolume;
+			        		},
+			        		error:function(XMLHttpRequest,textStatus,errorThrown){
+			        			console.log(XMLHttpRequest.status);
+			        			console.log(XMLHttpRequest.readyState);
+			        			console.log(textStatus);
+			        		}
+			        });
+			       return concurrence;
+		    	}());
+
+		    option3.xAxis[0].data.shift();
+		    option3.xAxis[0].data.push(axisData);
+		
+		    myChart3.setOption(option3);
+		}, 2100);
+		
+		//平均响应时间
+		var myChart4=echarts.init(document.getElementById("averagetime"));
+			option4 = {
+		    title: {
+		        text: '平均响应时间',
+		        left:'center'
+		    },
+		    tooltip: {
+		        trigger: 'axis',
+		        axisPointer: {
+		            type: 'cross',
+		            label: {
+		                backgroundColor: '#283b56'
+		            }
+		        }
+		    },
+		    legend: {
+		        data:['平均响应时间'],
+		        top:'30px'
+		    },
+		    toolbox: {
+		        show: true,
+		        left:'280px',
+		        feature: {
+		        	mark:{show:true},
+		            dataView: {show:true,readOnly: false},
+//		            magicType:{show:true,type:['line','bar']},
+		            restore: {show:true},
+		            saveAsImage: {show:true}
+		        }
+		    },
+		    dataZoom: {
+		        show: false,
+		        start: 0,
+		        end: 100
+		    },
+		    xAxis: [
+		        {
+		        	name:'时间 /时',
+		            type: 'category',
+		            boundaryGap: true,
+		            data: (function(){
+			        	var myDate = new Date(); //获取今天日期
+						myDate.setHours(myDate.getHours() - 11);
+						var dateArray = []; 
+						var dateTemp; 
+						var flag = 1; 
+						for (var i = 0; i < 12; i++) {
+						    dateTemp = ((myDate.getMonth()+1)+"/"+myDate.getDate())+" "+myDate.getHours()+":00";
+						    dateArray.push(dateTemp);
+						    myDate.setHours(myDate.getHours() + flag);
+						}
+						return dateArray;
+			        })()
+		        }
+		    ],
+		    yAxis: [
+		        {
+		            type: 'value',
+		            scale: true,
+		            name: '时间 /毫秒',
+//		            max: 30,
+//		            min: 0,
+		            boundaryGap: [0.2, 0.2]
+		        },
+		    ],
+		    series: [
+		        {
+		            name:'平均响应时间',
+		            type:'line',
+		            data:(function (){
+		                var averageTime=[];
+		                $.ajax({
+		                	type:"get",
+		                	url:"http://www.linyimin.club:8001/viewTopPerformance",
+		                	async:false,
+		                	dataType:'JSON',
+		                	crossDomain:true,
+		                	data:{},
+		                	success:function(data){
+		                		for(var i=0;i<12;i++){
+		                			averageTime[i]=data._datum._averageResponseTimeList[11-i];
+		                		}
+		                	},
+		                	error:function(XMLHttpRequest, textStatus, errorThrown){
+		                		console.log(XMLHttpRequest.status);
+		                        console.log(XMLHttpRequest.readyState);
+		                        console.log(textStatus); 
+		                	}
+		                });
+		                return averageTime;
+		            })()
+		        }
+		    ]
+		};
+		
+		myChart4.setOption(option4);
+		    setInterval(function (){
+		    axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+		
+		    var data0 = option4.series[0].data;
+		    var data0 = function(){
+		    	        var averageTime=[];
+		                $.ajax({
+		                	type:"get",
+		                	url:"http://www.linyimin.club:8001/viewTopPerformance",
+		                	async:false,
+		                	dataType:'JSON',
+		                	crossDomain:true,
+		                	data:{},
+		                	success:function(data){
+		                		for(var i=0;i<12;i++){
+		                			averageTime[i]=data._datum._averageResponseTimeList[11-i];
+		                		}
+		                	},
+		                	error:function(XMLHttpRequest, textStatus, errorThrown){
+		                		console.log(XMLHttpRequest.status);
+		                        console.log(XMLHttpRequest.readyState);
+		                        console.log(textStatus); 
+		                	}
+		                });
+		                return averageTime;
+		    	
+		    }();
+
+		    if(option4.xAxis[0].data[11]!=currentHour){
+			    		//删掉数组中第一个数据，最新数据填充最后一个数据
+			    		option4.yAxis[0].data.shift();
+			    	    option4.yAxis[0].data.push(currentHour);
+			    }	
+		
+		    myChart4.setOption(option4);
+		}, 1100);
+		
+		//CPU利用率
+		var myChart5 = echarts.init(document.getElementById('CPUuse'));
+			option5 = {
+				title: {
+					text: 'CPU利用率',
+					x: 'center'
+				},
+				tooltip: {
+					trigger: 'item',
+					formatter: "{a} <br/>{b} : {c} ({d}%)"
+				},
+				legend: {
+					orient: 'vertical',
+					left: 'left',
+					data: ['CPU已用', 'CPU未用']
+				},
+				toolbox: {
+					show: true,
+					left: '280px',
+					feature: {
+						mark: {
+							show: true
+						},
+						dataView: {
+							show: true,
+							readOnly: false
+						},
+						restore: {
+							show: true
+						},
+						saveAsImage: {
+							show: true
+						}
+					}
+				},
+				series: [{
+					name: 'CPU利用率',
+					type: 'pie',
+					radius: '55%',
+					center: ['50%', '60%'],
+					data: (function() {
+						var cpuUse = [];
+						$.ajax({
+							type: 'GET',
+							url: 'http://www.linyimin.club:8001/viewTopPerformance',
+							dataType: 'JSON',
+							async: false,
+							data: {},
+							crossDomain: true,
+							success: function(data) {
+								var cpuUserate = data._datum._cpuUsage;
+								var cpuNoUserate = 100 - data._datum._cpuUsage;
+								cpuUse[0] = {
+									value: cpuUserate,
+									name: "CPU已用"
+								};
+								cpuUse[1] = {
+									value: cpuNoUserate,
+									name: "CPU未用"
+								};
+							},
+							error: function(XMLHttpRequest, textStatus, errorThrown) {
+								console.log(XMLHttpRequest.status);
+								console.log(XMLHttpRequest.readyState);
+								console.log(textStatus);
+							}
+						})
+						return cpuUse;
+					})(),
+					itemStyle: {
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+				}]
+			};
+			myChart5.setOption(option5);
+
+			setInterval(function() {
+
+				var data0 = option5.series[0].data;
+				var data0 = function() {
+					var cpuUse = [];
+					$.ajax({
+						type: 'GET',
+						url: 'http://www.linyimin.club:8001/viewTopPerformance',
+						dataType: 'JSON',
+						async: false,
+						data: {},
+						crossDomain: true,
+						success: function(data) {
+							var cpuUserate = data._datum._cpuUsage;
+							var cpuNoUserate = 100 - data._datum._cpuUsage;
+							cpuUse[0] = {
+								value: cpuUserate,
+								name: "CPU已用"
+							};
+							cpuUse[1] = {
+								value: cpuNoUserate,
+								name: "CPU未用"
+							};
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
+							console.log(XMLHttpRequest.status);
+							console.log(XMLHttpRequest.readyState);
+							console.log(textStatus);
+						}
+					})
+					return cpuUse;
+
+				}();
+
+				myChart5.setOption(option5);
+			}, 1000 * 30);
+
+
+			
+			//内存利用率
+			var myChart6 = echarts.init(document.getElementById('memoryuse'));
+			option6={
+			    title : {
+			        text: 'Memory利用率',
+			        x: 'center'
+			    },
+			    tooltip: {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c} ({d}%)"
+			    },
+			    legend: {
+			        orient: 'vertical',
+			        left: 'left',
+			        data: ['Memory已用','Memory未用']
+			    },
+			    toolbox: {
+					        show : true,
+					        left:'290px',
+					        feature : {
+					        mark : {show: true},
+					        dataView : {show: true, readOnly: false},
+					        restore : {show: true},
+					        saveAsImage : {show: true}
+					    }
+				    },
+			    series : [
+			        {
+			            name: 'Memory利用率',
+			            type: 'pie',
+			            radius : '55%',
+			            center: ['50%', '60%'],
+			            data:(function(){
+			            	var MemoryUse=[];
+				  			$.ajax({
+								type:'GET',
+								url:'http://www.linyimin.club:8001/viewTopPerformance',
+								dataType:'JSON',
+								async:false,
+								data:{},
+								crossDomain: true,
+								success:function(data){
+									var MemoryUserate=data._datum._memoryUsage;
+									var MemoryNoUserate=100-data._datum._memoryUsage;
+									MemoryUse[0]={value:MemoryUserate,name:"Memory已用"};
+									MemoryUse[1]={value:MemoryNoUserate,name:"Memory未用"};
+								},
+								error: function(XMLHttpRequest, textStatus, errorThrown) {
+		                        console.log(XMLHttpRequest.status);
+		                        console.log(XMLHttpRequest.readyState);
+		                        console.log(textStatus); 
+					            }	
+							 }) 
+							 return MemoryUse;
+			            })(),
+			            itemStyle: {
+			                emphasis: {
+			                    shadowBlur: 10,
+			                    shadowOffsetX: 0,
+			                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+			                }
+			            }
+			        }
+			    ]
+			};
+			myChart6.setOption(option6);
+			
+			setInterval(function() {
+
+				var data0 = option6.series[0].data;
+				var data0 = function() {
+					var MemoryUse=[];
+				  			$.ajax({
+								type:'GET',
+								url:'http://www.linyimin.club:8001/viewTopPerformance',
+								dataType:'JSON',
+								async:false,
+								data:{},
+								crossDomain: true,
+								success:function(data){
+									var MemoryUserate=data._datum._memoryUsage;
+									var MemoryNoUserate=100-data._datum._memoryUsage;
+									MemoryUse[0]={value:MemoryUserate,name:"Memory已用"};
+									MemoryUse[1]={value:MemoryNoUserate,name:"Memory未用"};
+								},
+								error: function(XMLHttpRequest, textStatus, errorThrown) {
+		                        console.log(XMLHttpRequest.status);
+		                        console.log(XMLHttpRequest.readyState);
+		                        console.log(textStatus); 
+					            }	
+							 }) 
+							 return MemoryUse;
+				}();
+
+				myChart6.setOption(option6);
+			}, 1000 * 30);
+
+		</script>
+	</body>
+</html>

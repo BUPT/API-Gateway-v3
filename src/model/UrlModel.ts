@@ -6,7 +6,7 @@ class UrlModel{
     constructor(db: any){
         this._URL = db.define("url", {
             id: { type: 'serial', key: true },
-            APPId: String,
+            appId: String,
             from: String,
             to: String,
             status: String,
@@ -26,7 +26,7 @@ class UrlModel{
 		this._URL = value;
 	}
     // 查找数据
-    public async query(data: {[key:string]: string}, callback: (err: Error, results: {[key:string]:string}[]) => void): Promise<void>{
+    public async query(data: {[key:string]: string | string[]}, callback: (err: Error, results: {[key:string]:string}[]) => void): Promise<void>{
         this._URL.find(data, callback);
     }
     // 插入多条数据
@@ -40,8 +40,8 @@ class UrlModel{
     }
 
     // 更改数据
-    public async update(data: { [key: string]: string }, eachCallback: (err: Error) => void, saveCallback: (err: Error) => void): Promise<void>{
-        this._URL.find(data).each(eachCallback).save(saveCallback);
+    public async update(condition: { [key: string]: string }, data: { [key: string]: string }, callback: (err:Error, data: any) => void): Promise<void>{
+        this._URL.find(condition, callback);
     }
 }
 

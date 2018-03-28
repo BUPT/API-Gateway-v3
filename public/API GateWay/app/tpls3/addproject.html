@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>增加项目</title>
+		<link rel="stylesheet" href="../css/app.min.css">
+		<script src="../js/jquery-3.2.1.js"></script>
+		<style>
+			textarea {
+				height: 30px;
+				font-size: 12px;
+				border: 1px solid;
+				text-align: left;
+			}
+			
+			/*.header {*/
+				/*margin-left: 15px;*/
+			/*}*/
+			
+			input {
+				font-size: 12px;
+			}
+
+			.jumbotron{
+				height: 650px;
+			}
+			.ngdialog-content{
+				width: 800px !important;
+				height: 700px !important;
+			}
+			
+			a {
+				color: black;
+			}
+		</style>
+		<script>
+			function imgUpload() {
+				var formData = new FormData($("#formde")[0]);
+				$.ajax({
+					url: 'http://www.linyimin.club:8001/project/addProject',
+					type: 'POST',
+					data: formData,
+					async: false,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function(returndata) {
+                        alert(returndata.result);
+					    if(returndata.result == true){
+                            window.location.href="project.html";
+						}
+
+
+					},
+					error: function(returndata) {
+						alert(returndata);
+					}
+				});
+			}
+		</script>
+	</head>
+
+	<body style="background-color: #EEEEEE">
+		<div class="jumbotron">
+			<h3 class="header">ADD Project</h3>
+
+			<div class="row">
+				<div class="col s5">
+					<div class="card-panel teal">
+						<p class="white-text">
+							Project对象描述了API Gateway公开的project。 为了做到这一点，API Gateway需要知道如何在用户调用project时检索project。 这也可以通过指定一个自定义的DNS地址或特定的URL路径实现。
+						</p>
+
+						<p class="white-text">
+							然后，API Gateway需要知道代理请求project的最终目标URL是什么。
+						</p>
+					</div>
+				</div>
+				<form class="col s7"  id="formde">
+					<div>
+						<div class="from-group">
+							<label for="name">项目名称</label>
+							<input type="text" id="name" name="projectName">
+						</div>
+						<div class="from-group">
+							<label for="introduction">项目简介</label>
+							<textarea type="text" id="introduction" name="projectDescription"></textarea>
+						</div>
+						<div class="from-group">
+							<label for="publisher">发布者姓名</label>
+							<input type="text" id="publisher" name="publisher">
+						</div>
+						<div class="from-group">
+							<label for="newurl">上传logo图片</label>
+							<input type="file" id="newurl" name="avatar" multiple>
+						</div>
+					</div>
+					<div class="input-field col s12">
+						<button id="save" type="submit" class="waves-effect waves-light btn right" onclick="imgUpload()">
+							save
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</body>
+
+</html>

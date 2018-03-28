@@ -10,7 +10,8 @@ class ProjectModel {
             name: String,
             description: String,
             create_time: String,
-            publisher: String
+            publisher: String,
+            img: String
         });
     }
 
@@ -22,7 +23,7 @@ class ProjectModel {
         this._project = value;
     }
     // 查找数据
-    public async query(data: { [key: string]: string }, callback: (err: Error, results: { [key: string]: string }[]) => void): Promise<void> {
+    public async query(data: { [key: string]: string | string[] }, callback: (err: Error, results: { [key: string]: string }[]) => void): Promise<void> {
         this._project.find(data, callback);
     }
     // 插入多条数据

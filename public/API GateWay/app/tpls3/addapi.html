@@ -2,98 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>增加API</title>
+    <title>打开API</title>
+    <link rel="stylesheet" href="../css/app.min.css">
+    <script src="../js/jquery-3.2.1.js"></script>
+    <style>
+        .ngdialog-content{
+            width: 450px !important;
+            height: 250px !important;
+        }
+    </style>
+    <script>
+        function Upload() {
+            var formData = new FormData($("#uploadForm")[0]);
+            $.ajax({
+                url: 'http://www.linyimin.club:8001/apis/uploads',
+                type: 'post',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(returndata) {
+                    alert(returndata.result);
+                    if(returndata.result == true){
+                        window.location.href="api.html";
+                    }
+
+
+                },
+                error: function(returndata) {
+                    alert(returndata);
+                }
+            });
+        }
+    </script>
 </head>
 <body>
-<div class="jumbotron">
-    <h3 class="header">ADD API</h3>
-
-    <div class="row">
-        <div class="col s5">
-            <div class="card-panel teal">
-                <p class="white-text">
-                    API对象描述了API Gateway公开的API。 为了做到这一点，API Gateway需要知道如何在用户调用API时检索API。 这也可以通过指定一个自定义的DNS地址或特定的URL路径实现。
-                </p>
-
-                <p class="white-text">
-                    然后，API Gateway需要知道代理请求API的最终目标URL是什么。
-                </p>
-            </div>
+<form id="uploadForm">
+    <div>
+        <div class="from-group">
+            <label>文件名称</label>
+            <input type="text" name="fileName">
         </div>
-        <form class="col s7">
-            <div class="row">
-                <div class="input-field col s12">
-                    <input id="name" ng-model="api.name" type="text">
-                    <label for="name" ng-class="{active:api.name}">名字</label>
-                </div>
-                <div class="input-field col s12">
-                    <input id="hosts" ng-model="api.hosts" type="text" class="validate">
-                    <label for="hosts" ng-class="{active:api.hosts}">主机</label>
-                </div>
-                <div class="input-field col s12">
-                    <input id="uris"  ng-model="api.uris" type="text" class="validate">
-                    <label for="uris" ng-class="{active:api.uris}">Uris</label>
-                </div>
-                <div class="input-field col s12">
-                    <input id="methods"  ng-model="api.methods" type="text" class="validate" ng-class="{invalid: error.methods}">
-                    <label for="methods" ng-class="{active:api.methods}">方法</label>
-                    <app-field-error error="error.methods"></app-field-error>
-                </div>
-                <div class="input-field col s12">
-                    <input id="upstream_url"  ng-model="api.upstream_url" type="text" class="validate" ng-class="{invalid: error.upstream_url}">
-                    <label for="upstream_url" ng-class="{active:api.upstream_url}">网址 url</label>
-                    <app-field-error error="error.upstream_url"></app-field-error>
-                </div>
-                <!--<div class="input-field col s12">-->
-                    <!--<input id="retries"  ng-model="api.retries" type="text" class="validate" ng-class="{invalid: error.retries}">-->
-                    <!--<label for="retries" ng-class="{active:api.retries}">重试</label>-->
-                    <!--<app-field-error error="error.retries"></app-field-error>-->
-                <!--</div>-->
-                <!--<div class="input-field col s12">-->
-                    <!--<input id="upstream_connect_timeout"  ng-model="api.upstream_connect_timeout" type="text" class="validate" ng-class="{invalid: error.upstream_connect_timeout}">-->
-                    <!--<label for="upstream_connect_timeout" ng-class="{active:api.upstream_connect_timeout}">网址链接时间</label>-->
-                    <!--<app-field-error error="error.upstream_connect_timeout"></app-field-error>-->
-                <!--</div>-->
-                <!--<div class="input-field col s12">-->
-                    <!--<input id="upstream_send_timeout"  ng-model="api.upstream_send_timeout" type="text" class="validate" ng-class="{invalid: error.upstream_send_timeout}">-->
-                    <!--<label for="upstream_send_timeout" ng-class="{active:api.upstream_send_timeout}">网址发送时间</label>-->
-                    <!--<app-field-error error="error.upstream_send_timeout"></app-field-error>-->
-                <!--</div>-->
-                <!--<div class="input-field col s12">-->
-                    <!--<input id="upstream_read_timeout"  ng-model="api.upstream_read_timeout" type="text" class="validate" ng-class="{invalid: error.upstream_read_timeout}">-->
-                    <!--<label for="upstream_read_timeout" ng-class="{active:api.upstream_read_timeout}">网址读取时间</label>-->
-                    <!--<app-field-error error="error.upstream_read_timeout"></app-field-error>-->
-                <!--</div>-->
-                <!--<p class="col s6">-->
-                    <!--<input type="checkbox" ng-model="api.strip_uri" class="filled-in validate" id="strip_uri" ng-true-value="true" ng-false-value="false" />-->
-                    <!--<label for="strip_uri">去掉 uri</label>-->
-                    <!--<app-field-error error="error.strip_uri"></app-field-error>-->
-                <!--</p>-->
-                <!--<p class="col s6">-->
-                    <!--<input type="checkbox"  ng-model="api.preserve_host" class="filled-in validate" id="preserve_host" ng-true-value="true" ng-false-value="false" />-->
-                    <!--<label for="preserve_host">维持 host</label>-->
-                    <!--<app-field-error error="error.preserve_host"></app-field-error>-->
-                <!--</p>-->
-                <!--<p class="col s6">-->
-                    <!--<input type="checkbox"  ng-model="api.https_only" class="filled-in validate" id="https_only" ng-true-value="true" ng-false-value="false" />-->
-                    <!--<label for="https_only">仅Https</label>-->
-                    <!--<app-field-error error="error.https_only"></app-field-error>-->
-                <!--</p>-->
-                <!--<p class="col s6">-->
-                    <!--<input type="checkbox"  ng-model="api.http_if_terminated" class="filled-in validate" id="http_if_terminated" ng-true-value="true" ng-false-value="false" />-->
-                    <!--<label for="http_if_terminated">终止Http</label>-->
-                    <!--<app-field-error error="error.http_if_terminated"></app-field-error>-->
-                <!--</p>-->
-                <div class="input-field col s12">
-                    <button type="submit" class="waves-effect waves-light btn right">
-                        保存
-                    </button>
-                </div>
-            </div>
-            <input type="hidden" ng-model="api.id" value="{{api.id}}" />
-        </form>
+        <div class="from-group">
+            <label>上传文件</label>
+            <input type="file"  name="avatar" multiple>
+        </div>
     </div>
-</div>
-<div ui-view></div>
+    <div class="input-field col s12">
+        <button value="save" type="button" class="waves-effect waves-light btn right" onclick="Upload()">
+            save
+        </button>
+    </div>
+</form>
 </body>
 </html>

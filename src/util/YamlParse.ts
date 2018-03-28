@@ -97,7 +97,7 @@ class YamlParse{
                 "to": realHost, 
                 "status": status, 
                 "is_new": is_new, 
-                "APPId": appId, 
+                "appId": appId, 
                 "is_atom": "1", 
                 "register_time": timeString, 
                 "method": method,

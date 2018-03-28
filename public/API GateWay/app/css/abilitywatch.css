@@ -1,0 +1,30 @@
+body{
+	padding: 0 !important;
+	margin: 0 !important;
+	background-color: #eeeeee;
+}
+#container{
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+.first,.second{
+	position: relative;
+	width: 97%;
+	height: 48%;
+	box-sizing: border-box;
+	margin-top: 7%;
+	margin-left: 3% !important;
+}
+.top, .bottom{
+	display: inline-block;
+	position: relative;
+	width: 32%;
+	height: 100%;
+}
+#totalvisit,#unitvisit,#concurrence,#averagetime,#CPUuse,#memoryuse{
+	position: relative;
+	width: 100%;
+	height: 290px;
+	border: 1px solid gray;
+}

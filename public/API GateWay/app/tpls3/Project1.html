@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html ng-app="APIGateway">
+<head>
+    <meta charset="UTF-8">
+    <title>打开API</title>
+     <link rel="stylesheet" href="../css/bootstrap-3.0.0/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/app.min.css">
+    <link rel="stylesheet" href="../css/ngDialog.css">
+    <link rel="stylesheet" href="../css/ngDialog-theme-default.css">
+    
+    <script src="../js/angular-1.3.0.js"></script>
+    <!--<script src="../js/angular-animate.js"></script>-->
+    <script src="../js/ngDialog.js"></script>
+    <script src="../js/ionic.bundle.min.js"></script>
+    <script src="../controlller.js"></script>
+    <script src="../app.js"></script>
+    <style>
+        table, tr ,th, td  {
+            border: 0px solid white;
+            border-collapse: collapse;
+            padding: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+        tr{
+            border:0px solid white;
+        }
+        td{
+            border: 0px;
+            word-wrap:break-word;
+            word-break:break-all;
+        }
+        table tr:nth-child(odd)	{
+            background-color: #f1f1f1;
+        }
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+        #table1{
+            overflow:hidden;
+            margin:3% 30px 0;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+            border-radius:5px;
+            -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+            -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+        }
+        .table-title{
+            height: 30px;
+        }
+    </style>
+</head>
+<body style="background-color: #eeeeee;">
+<form name="form">
+    <div class="jumbotron text-center" ng-controller="projectCtrl">
+        <div style="margin-top: 40px;margin-bottom: 20px">
+            <h3 class="header" style="margin-left: -70%;display: inline;min-width: 50px">项目信息</h3>
+            <a href="addproject.html" class="btn-floating btn-large waves-effect waves-light right" style="margin-right: 100px" ng-click="addproject()">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </div>
+        <div class="table-responsive" id="table1">
+            <table class="table">
+                <tr class="table-title">
+                    <th style="width: 5%">序号</th>
+                    <th style="width: 8%">项目名称</th>
+                    <th style="width: 10%">项目发布人</th>
+                    <th style="width: 16%">创建时间</th>
+                    <th style="width: 19%">操作</th>
+                </tr>
+                <tr class="table-tr" ng-repeat="project in projects track by $index">
+                    <td>{{ $index + 1 }}</td>
+                    <td><a href="" ng-click="openProject(project)">{{project.projectname}}</a></td>
+                    <td ng-bind="project.publisher"></td>
+                    <td>{{project.createtime | limitTo:10}}</td>
+                    <td>
+                        <a href="" class="btn-floating waves-effect waves-light" ng-click="editproject(project)">
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </a>
+                        <a class="btn-floating waves-effect waves-light red modal-trigger" ng-click="projects.splice($index,1)">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                        <a href="api.html" class="btn-floating waves-effect waves-light" ng-click="query()">
+                            <i class="glyphicon glyphicon-tasks"></i>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</form>
+</body>
+</html>

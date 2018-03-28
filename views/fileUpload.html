@@ -1,22 +1,36 @@
-<html>
-<head>
-    <title>文件上传表单</title>
-    <script src="/static/jquery-3.2.1.min.js"> </script>
-    <script>
-        function submit(){
-            $(".btn").click(function(){
-                $(".form").submit();
-            });
-        }
-    </script>
-</head>
+<!DOCTYPE html>
+<html lang="en">
 <body>
-<h3>文件上传：</h3>
-<form action="/apis/uploads" enctype="multipart/form-data" method="post" class="form">
-    swagger配置文件名称:<input type="text" name="fileName" id="fileName"><br />
-    <input type="file" name="upload" multiple="multiple"><br>
-    <input type="button" class="btn" value="提交" onclick="submit()"/>
-</form>
+    <script type="text/javascript" src="http://www.linyimin.club:8001/static/jquery-3.2.1.min.js"></script>
+      <form id = "uploadForm">
+        <div class="field required">
+          <label>项目logo</label>
+          <br/>
+          <input type="file" name="avatar" multiple>
+        </div>
+        <input type="button" value="上传" onclick="doUpload()" />  
+      </form>
 
-</body>
-</html>
+      <script type="text/javascript">
+        function doUpload() {  
+          var formData = new FormData($( "#uploadForm" )[0]);  
+          $.ajax({  
+                url: 'http://www.linyimin.club:8001/apis/uploads' ,  
+                type: 'POST',  
+                data: formData,  
+                async: false,  
+                cache: false,  
+                contentType: false,  
+                processData: false,  
+                success: function (returndata) {  
+                    alert(returndata.result);  
+                },  
+                error: function (returndata) {  
+                    alert(returndata);  
+                }  
+      });  
+}  
+    </script>
+      </body>   
+</html>>
+  

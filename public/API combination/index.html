@@ -2,7 +2,8 @@
 <html lang="en" ng-app="APIGateway">
 
 <head>
-    <title>可视化API组合系统</title>
+    <title>中移动网络能力开放平台---API动态组合编排系统</title>
+    <link rel='icon' href='img/title.ico ' type='image/x-ico' />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -28,67 +29,121 @@
         .table tbody tr td {
             vertical-align: middle;
         }
+
+        .disappear {
+            display: none;
+        }
+
+        .upup {
+            margin-top: -130px;
+        }
+
+        @media screen and (min-width:1024px) and (max-width:1440px) {
+            #container {
+                margin-left: 160px;
+            }
+        }
+
+        @media screen and (min-width:2000px) and (max-width:2560px) {
+            #container {
+                margin-left: 25%;
+                margin-top: -10px;
+            }
+            h1 {
+                margin-top: 3%;
+            }
+            #foot {
+                position: absolute;
+            }
+        }
+
+        @media screen and (min-width:2570px) and (max-width:3400px) {
+            #container {
+                margin-top: -10px;
+            }
+            h1 {
+                margin-top: 3%;
+            }
+            #foot {
+                position: absolute;
+            }
+        }
+        .nav-tabs>li>a{
+            background-color: #d9dfe8;
+        }
     </style>
 </head>
 
-<body ng-controller="StartCtrl">
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#" ng-bind="title"></a>
-            </div>
-            <div>
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-bind="file"></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="javascript:location.reload();" ng-bind="file1"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="file2" ng-click="openapi()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="file3" ng-click="lookall()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="file4" ng-click="rename()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="file5"></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-bind="operate"></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#" ng-bind="operate1" ng-click="show()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="operate5" ng-click="outjson()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="operate2" ng-click="register()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="operate4" ng-click="debug()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="operate3" ng-click="goback()"></a>
-                            </li>
-                        </ul>
-                    </li>
+<body ng-controller="StartCtrl" style="width:100%;min-height:100vh">
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-default" role="navigation" id="navnav" style="background-color: #1e79a9;height:60px;    margin-bottom: 40px;">
+        <div class="navbar-left" style="margin-left:10px;width:200px;">
+            <table>
+                <tr>
+                    <td>
+                        <img src="img/chinamobile.png" alt="logo" height="60px;">
 
-                    <li class="dropdown">
+                    </td>
+                    <td align="center" style="color:#cfd9f3">中国移动
+                        <br/>网络能力开放平台</td>
+                </tr>
+            </table>
+        </div>
+        <div class="container-fluid">
+            <div id="navcont">
+                <div id="nav">
+                    <ul class="nav navbar-nav" style="margin-top:-1px">
+                        <li>
+                            <a href="#" class="dropdown-toggle file" data-toggle="dropdown" ng-bind="file" style="font-size:15px;"></a>
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="javascript:location.reload();" ng-bind="file1"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="file2" ng-click="openapi()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="file3" ng-click="lookall()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="file4" ng-click="rename()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="APIindex.html" ng-bind="file5"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle operate" data-toggle="dropdown" ng-bind="operate" style="font-size:15px;"></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#" ng-bind="operate1" ng-click="show()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="operate5" ng-click="outjson()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="operate2" ng-click="register()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="operate4" ng-click="debug()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="operate3" ng-click="goback()"></a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-bind="tool"></a>
                         <ul class="dropdown-menu">
                             <li>
@@ -103,34 +158,42 @@
                                 <a href="#" ng-bind="tool3"></a>
                             </li>
                         </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-bind="window"></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="#" ng-bind="window1" ng-click="newwindow()"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="window2"></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-bind="help"></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="http://www.linyimin.club:8001/static/viewAPIs.html#/" ng-bind="help1" target="_blank"></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#" ng-bind="help2"></a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                    </li> -->
+                        <li>
+                            <a href="#" class="dropdown-toggle window" data-toggle="dropdown" ng-bind="window" style="font-size:15px;"></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#" ng-bind="window1" ng-click="newwindow()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="window2" ng-click="systemClose()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="window3" ng-click="fullScreen()"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="window4" ng-click="exitScreen()"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-toggle help" data-toggle="dropdown" ng-bind="help" style="font-size:15px;"></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="http://www.linyimin.club:8001/static/viewAPIs.html#/" ng-bind="help1" target="_blank"></a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" ng-bind="help2" ng-click="howtouse()"></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
     </nav>
 
     <!-- 注册弹窗 -->
@@ -155,7 +218,8 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label" style=" text-align: center;">参数</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" placeholder="请输入参数" ng-model="r_input">
+                        <textarea class="form-control" rows="3" disabled="disabled" ng-model="r_input"></textarea>
+                        <!-- <input type="text" class="form-control" placeholder="请输入参数" > -->
                     </div>
                 </div>
                 <div class="form-group">
@@ -168,6 +232,15 @@
                     <label class="col-sm-4 control-label" style=" text-align: center;">URL</label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" placeholder="请输入URL" ng-model="r_url">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" style=" text-align: center;">方法</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="methods">
+                            <option value ="get">GET</option>
+                            <option value ="post">POST</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -213,7 +286,7 @@
                         <th>ID</th>
                         <th>名称</th>
                         <th>类型</th>
-                        <th>参数</th>
+                        <!-- <th>参数</th> -->
                         <th>输出</th>
                         <th>URL</th>
                     </tr>
@@ -223,7 +296,7 @@
                         <td>{{data.ID}}</td>
                         <td>{{data.name}}</td>
                         <td>{{data.type}}</td>
-                        <td>{{data.argument}}</td> 
+                        <!-- <td>{{data.argument}}</td>  -->
                         <td>{{data.event}}</td>
                         <td>{{data.URL}}</td>   
                     </tr>
@@ -291,10 +364,36 @@
         </div>
     </script>
 
+    <!-- 使用说明弹窗 -->
+    <script type="text/ng-template" id="howtouse.html">
+        <div class="ui-dialog-title">
+            使用说明
+        </div>
+        <div class="ui-dialog-content" style="margin-top:40px;">
+            <b>拖拽设置方法：</b><br/>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;屏幕左侧列出的是7大类原子API，选择其中一类拖拽到中间画布上，单击，右侧属性设置的“名称”栏中会出现该类中所有原子API，选择所需的API，其所有相关信息都会出现在属性栏中，然后根据需求选择是否异步并填入执行条件，设置完毕后点击“保存”，即可进行下一节点API的拖拽和配置。“操作--撤销”功能可以撤销最近一次的错误拖拽。当想让新的API是原有API的孩子节点时，需将该API拖拽至父节点上至父节点变浅，松开鼠标即可。<br/>
+            <br/>
+            <b>生成json格式树：</b><br/>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;组合API设置完成后，选择“操作--生成json格式树”，即可在右侧JSON栏中看到表示当前画布上组合API的json文件，点击“json格式树导出”即可导出json文件进行查看。<br/>
+            <br/>
+            <b>注册：</b><br/>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;确认无误后点击“操作--注册”功能，填写相关信息后点击“确定”，成功与否会出现弹窗提示。<br/>
+            <br/>
+            <b>调试：</b><br/>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;注册成功后点击“操作--调试”功能，输入URL进行调试，相关信息会显示在控制台中。<br/>
+            <br/>
+            <b>Swagger帮助页面：</b><br/>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;点击“帮助--Swagger帮助”会跳转到Swagger相关界面，可以对系统内部所调用的一些接口进行查看与测试。<br/>
+            <br/><br/>
+            <a href="specification.html" target="_blank">点击此处查看具体举例说明</a><br/>
+
+        </div>
+    </script>
+
     <!-- 可拖动的所有 SVG 图标 -->
     <div style="display: none;">
         <svg>
-            <symbol id="Icon1" viewBox="0 0 10 10">
+            <!-- <symbol id="Icon1" viewBox="0 0 10 10">
                 <circle cx="3" cy="4" r="2" style="fill:rgb(255, 0, 0);" />
             </symbol>
             <symbol id="Icon2" viewBox="0 0 10 10">
@@ -314,21 +413,38 @@
             </symbol>
             <symbol id="Icon7" viewBox="0 0 10 10">
                 <circle cx="3" cy="4" r="2" style="fill:rgb(153, 7, 109);" />
-            </symbol>
-            <symbol id="Icon0" viewBox="0 0 10 10">
-                <circle cx="3" cy="4" r="2" style="fill:rgb(99, 96, 98);" />
+            </symbol> -->
+            <symbol id="Icon" viewBox="0 0 1024 1024">
+                <path d="M1002.003845 512c0 47.254822-38.308713 85.563535-85.563535 85.563535h-30.950201c-38.904062 171.460465-192.234171 299.468403-375.474605 299.468403-183.240434 0-336.570543-128.007938-375.474605-299.468403H103.590698c-47.254822 0-85.563535-38.308713-85.563535-85.563535S56.335876 426.436465 103.590698 426.436465h30.950201c38.904062-171.460465 192.234171-299.468403 375.474605-299.468403 183.240434 0 336.570543 128.007938 375.474605 299.468403h30.950201c47.254822 0 85.563535 38.308713 85.563535 85.563535z"
+                    fill="#FED766" />
+                <path d="M18.027163 512h983.976682c0 47.254822-38.308713 85.563535-85.563535 85.563535h-30.950201c-38.904062 171.460465-192.234171 299.468403-375.474605 299.468403-183.240434 0-336.570543-128.007938-375.474605-299.468403H103.590698c-47.254822 0-85.563535-38.308713-85.563535-85.563535z"
+                    fill="#E8BA52" />
+                <path d="M725.388899 417.141085a234.448372 234.448372 0 0 1 19.924341 94.858915c0 129.944806-105.344992 235.297736-235.297736 235.297736-129.944806 0-235.297736-105.344992-235.297737-235.297736 0-129.944806 105.344992-235.297736 235.297737-235.297736 33.75231 0 65.845581 7.120372 94.858915 19.924341a85.198388 85.198388 0 0 1 54.875286-19.924341c47.254822 0 85.563535 38.308713 85.563535 85.563534 0 20.884837-7.493457 40.01538-19.924341 54.875287z"
+                    fill="#DCF3F9" />
+                <path d="M725.388899 417.141085a234.488062 234.488062 0 0 1 19.924341 94.858915c0 129.944806-105.344992 235.297736-235.297736 235.297736-129.944806 0-235.297736-105.344992-235.297737-235.297736 0-129.944806 105.344992-235.297736 235.297737-235.297736 33.75231 0 65.845581 7.120372 94.858915 19.924341a85.373023 85.373023 0 0 0-30.688248 65.639193c0 47.254822 38.308713 85.563535 85.563534 85.563535 26.369984 0 49.945798-11.938729 65.647132-30.688248z"
+                    fill="#84A7B7" />
+                <path d="M654.407442 512c0 79.617984-64.773953 144.391938-144.391938 144.391938-79.617984 0-144.391938-64.773953-144.391938-144.391938 0-45.992682 21.154729-88.167194 58.034605-115.727876a16.050605 16.050605 0 0 1 19.209922 25.703194c-28.695814 21.448434-45.151256 54.256124-45.151256 90.024682 0 61.924217 50.37445 112.298667 112.298667 112.298667S622.314171 573.924217 622.314171 512l-0.007938-0.277829a48.00893 48.00893 0 0 1-0.031752-1.079566 16.034729 16.034729 0 0 1 15.852155-16.233179h0.198449c8.771473 0 15.931535 7.056868 16.034729 15.852155l0.015876 0.309582 0.023814 1.428837zM506.602171 399.741023h0.420713c0.992248-0.023814 1.984496-0.03969 2.944992-0.03969l0.317519 0.007938 1.079566 0.031752h0.190512a16.018853 16.018853 0 0 0 16.018853-15.820403 16.066481 16.066481 0 0 0-15.820404-16.26493l-0.317519-0.007938c-1.746357-0.063504-3.500651-0.023814-5.23907 0.015876a16.034729 16.034729 0 0 0 0.404838 32.077395z"
+                    fill="#FFFFFF" />
+                <path d="M916.44031 410.393798h-18.35262c-21.535752-82.277209-69.528806-156.63231-136.120558-210.46772-71.005271-57.391628-160.482233-89.000682-251.951628-89.000683s-180.946357 31.609054-251.951628 89.000683C191.464186 253.761488 143.47907 328.116589 121.943318 410.393798H103.590698C47.564403 410.393798 1.984496 455.973705 1.984496 512c0 56.026295 45.579907 101.606202 101.606202 101.606202h18.35262c21.527814 82.277209 69.520868 156.63231 136.120558 210.46772 71.005271 57.391628 160.482233 89.000682 251.951628 89.000683s180.946357-31.609054 251.951628-89.000683c66.59969-53.835411 114.584806-128.190512 136.120558-210.46772h18.35262c56.026295 0 101.606202-45.579907 101.606202-101.606202 0-56.026295-45.579907-101.606202-101.606202-101.606202z m0 171.12707h-30.950201c-7.493457 0-13.986729 5.183504-15.63783 12.494388-38.348403 168.967938-186.320372 286.974016-359.836775 286.974015-173.524341 0-321.488372-118.006078-359.828837-286.974015a16.042667 16.042667 0 0 0-15.645768-12.494388H103.590698c-38.340465 0-69.520868-31.188341-69.520869-69.520868 0-38.332527 31.188341-69.520868 69.520869-69.520868h30.950201c7.493457 0 13.986729-5.183504 15.63783-12.494388C188.527132 261.016806 336.491163 143.010729 510.015504 143.010729c173.524341 0 321.488372 118.006078 359.828837 286.974015a16.042667 16.042667 0 0 0 15.645768 12.494388h30.950201c38.340465 0 69.520868 31.188341 69.520868 69.520868 0 38.332527-31.188341 69.520868-69.520868 69.520868zM659.749705 260.659597c-21.170605 0-40.848868 6.517085-57.14555 17.646139a249.522605 249.522605 0 0 0-92.588651-17.646139c-138.597209 0-251.340403 112.751132-251.340403 251.340403 0 138.597209 112.751132 251.340403 251.340403 251.340403 138.597209 0 251.340403-112.751132 251.340403-251.340403 0-32.029767-5.937612-63.130791-17.64614-92.588651a101.018791 101.018791 0 0 0 17.64614-57.153489c0-56.018357-45.579907-101.606202-101.606202-101.606201z m69.520869 101.606201c0 38.332527-31.188341 69.520868-69.520869 69.520869-38.340465 0-69.520868-31.196279-69.520868-69.520869 0-38.340465 31.188341-69.520868 69.520868-69.520868 38.340465 0 69.520868 31.188341 69.520869 69.520868zM510.015504 731.247132c-120.895504 0-219.25507-98.351628-219.25507-219.25507 0-120.895504 98.351628-219.25507 219.25507-219.25507 23.051907 0 45.548155 3.516527 67.131535 10.470202a101.018791 101.018791 0 0 0-19.003535 59.050666c0 56.018357 45.579907 101.606202 101.606201 101.606202 22.012031 0 42.396775-7.064806 59.058605-19.003535A218.143752 218.143752 0 0 1 729.262636 512c0 120.895504-98.351628 219.25507-219.25507 219.25507zM493.972837 41.404527V20.003721a16.034729 16.034729 0 1 1 32.085334 0v21.392868a16.034729 16.034729 0 1 1-32.085334 0z m32.085334 941.190946v21.392868a16.034729 16.034729 0 1 1-32.085334 0v-21.392868a16.034729 16.034729 0 1 1 32.085334 0zM150.782016 175.461209a16.034729 16.034729 0 1 1 22.686759-22.694697l15.129799 15.129798a16.034729 16.034729 0 1 1-22.68676 22.68676l-15.129798-15.129799z m718.466976 673.08552a16.034729 16.034729 0 1 1-22.694697 22.686759l-15.121861-15.129798a16.034729 16.034729 0 1 1 22.68676-22.68676l15.129798 15.129799z m-37.816558-657.963659a16.034729 16.034729 0 0 1 0-22.68676l15.129799-15.12186a16.042667 16.042667 0 0 1 22.686759 22.686759l-15.129798 15.121861a16.002977 16.002977 0 0 1-11.34338 4.699287 16.002977 16.002977 0 0 1-11.34338-4.699287z m-642.83386 642.83386c6.271008 6.271008 6.271008 16.42369 0 22.68676l-15.121861 15.12186a16.002977 16.002977 0 0 1-11.351318 4.707225 16.034729 16.034729 0 0 1-11.351317-27.386046l15.137736-15.129799a16.050605 16.050605 0 0 1 22.68676 0z"
+                    fill="#4C4C4C" />
             </symbol>
         </svg>
     </div>
-    <div class="container">
+
+
+    <!-- 正文 -->
+    <h1 align="center" style="font-size:25px;font-family:Comic Sans MS;color: #637196;" ng-bind="title"></h1>
+    <br/>
+    <br/>
+    <div class="container" id="container">
         <div class="row">
             <div class="col-md-9" style="position: relative; ">
                 <div class="left">
                     <br />
                     <p style="font-size:20px;">API类型列表</p>
                     <div style="height:2px;"></div>
-                    <div class="sdt-drag-element-lis">
-                        <div class="sdt-drag-element" data-sdt-type="CallControl">
+                    <div class="sdt-drag-element-lis" style="margin-left:-20px;">
+                        <!-- <div class="sdt-drag-element" data-sdt-type="CallControl">
                             <svg width="100" height="50">
                                 <use xlink:href="#Icon1" x="-15" y="5"></use>
                                 <text x="0" y="10" style="font-size: 11px; font-weight: 600;">呼叫控制类</text>
@@ -375,27 +491,75 @@
                                 <use xlink:href="#Icon7" x="-15" y="5"></use>
                                 <text x="8" y="10" style="font-size: 11px; font-weight: 600;">消息类</text>
                             </svg>
+                        </div> -->
+                        <div class="sdt-drag-element" data-sdt-type="CallControl">
+                            <svg width="150" height="36">
+                                <use xlink:href="#Icon" x="-55" y="0"></use>
+                                <text x="40" y="24" fill="#666" style="font-size: 13px; font-weight: 600;">呼叫控制类</text>
+                            </svg>
+                        </div>
+                        <div style="height:2px;"></div>
+                        <div class="sdt-drag-element" data-sdt-type="NumberChange">
+                            <svg width="150" height="36">
+                                <use xlink:href="#Icon" x="-55" y="0"></use>
+                                <text x="40" y="24" fill="#666" style="font-size: 13px; font-weight: 600;">号码改变类</text>
+                            </svg>
+                        </div>
+                        <div style="height:2px;"></div>
+                        <div class="sdt-drag-element" data-sdt-type="OutBound">
+                            <svg width="150" height="36">
+                                <use xlink:href="#Icon" x="-55" y="0"></use>
+                                <text x="40" y="24" fill="#666" style="font-size: 13px; font-weight: 600;">外呼类</text>
+                            </svg>
+                        </div>
+                        <div style="height:2px;"></div>
+                        <div class="sdt-drag-element" data-sdt-type="MultiCall">
+                            <svg width="150" height="36">
+                                <use xlink:href="#Icon" x="-55" y="0"></use>
+                                <text x="40" y="24" fill="#666" style="font-size: 13px; font-weight: 600;">多方通话类</text>
+                            </svg>
+                        </div>
+                        <div style="height:2px;"></div>
+                        <div class="sdt-drag-element" data-sdt-type="IVR">
+                            <svg width="150" height="36">
+                                <use xlink:href="#Icon" x="-55" y="0"></use>
+                                <text x="40" y="24" fill="#666" style="font-size: 13px; font-weight: 600;">IVR类</text>
+                            </svg>
+                        </div>
+                        <div style="height:2px;"></div>
+                        <div class="sdt-drag-element" data-sdt-type="QOS">
+                            <svg width="150" height="36">
+                                <use xlink:href="#Icon" x="-55" y="0"></use>
+                                <text x="40" y="24" fill="#666" style="font-size: 13px; font-weight: 600;">QOS类</text>
+                            </svg>
+                        </div>
+                        <div style="height:2px;"></div>
+                        <div class="sdt-drag-element" data-sdt-type="Message">
+                            <svg width="150" height="36">
+                                <use xlink:href="#Icon" x="-55" y="0"></use>
+                                <text x="40" y="24" fill="#666" style="font-size: 13px; font-weight: 600;">消息类</text>
+                            </svg>
                         </div>
                     </div>
                 </div>
                 <div class="cent">
                     <!-- 目标画布被一个 class="sdt-canvas" 的 <div> 标签包围，此标签的宽和高决定了目标画布的宽和高。目标画布本身是一个 id="sdt-drop-canvas" 的 <svg>标签 -->
-                    <div class="sdt-canvas" style="width: 740px; height: 500px; border:1px solid #ccc">
+                    <div class="sdt-canvas" style="width: 740px; height: 560px; border:1px solid #ccc">
                         <svg id="sdtDropCanvas" width="100%" height="100%">
                         </svg>
                     </div>
                 </div>
                 <div class="right"></div>
-                <div class="row" style="margin-left:-70px;position:absolute;bottom:-180px;">
-                    <form role="form" style="width:900px;">
-                        <div class="form-group">
+                <!-- <div class="row" style="margin-left:-70px;position:absolute;bottom:-180px;">
+                    <form role="form" style="width:900px;margin-top:-280px">
+                        <div class="form-group" style="width:300px;float:right;margin-right:-340px">
                             <label style="font-size:15px;">控制台</label>
                             <textarea class="form-control" rows="5" disabled="disabled" ng-model="debuginformation"></textarea>
                         </div>
                     </form>
-                </div>
+                </div> -->
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" style="margin-top:5px;">
                 <ul id="myTab" class="nav nav-tabs">
                     <li class="active">
                         <a href="#home" data-toggle="tab">属性设置</a>
@@ -403,68 +567,77 @@
                     <li>
                         <a href="#json" data-toggle="tab">JSON</a>
                     </li>
+                    <li>
+                        <a href="#debug" data-toggle="tab">控制台</a>
+                    </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="home">
                         <form class="form-horizontal" role="form">
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <input type="text" style="display:none;" id="nodeid"></input>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">类型</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" ng-model="type" disabled="disabled" id="tp" style="width:200px;"></input>
+                                    <input type="text" class="form-control" ng-model="type" disabled="disabled" id="tp" style="width:170px;"></input>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">名称</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="name" style="width:200px;">
+                                    <select class="form-control" id="name" style="width:170px;">
                                         <!-- <option>1</option> -->
                                         <!-- <option>2</option> -->
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">ID</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" ng-model="id" disabled="disabled" id="idid" style="width:200px;"></input>
+                                    <input type="text" class="form-control" ng-model="id" disabled="disabled" id="idid" style="width:170px;"></input>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">参数</label>
                                 <div class="col-sm-8">
-                                    <textarea class="form-control" rows="3" ng-model="input" disabled="disabled" id="inputt" style="width:200px;"></textarea>
+                                    <textarea class="form-control" rows="3" ng-model="input" disabled="disabled" id="inputt" style="width:170px;"></textarea>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">输出</label>
                                 <div class="col-sm-8">
-                                    <textarea class="form-control" rows="2" ng-model="output" disabled="disabled" id="output" style="width:200px;"></textarea>
+                                    <textarea class="form-control" rows="3" ng-model="output" disabled="disabled" id="output" style="width:170px;"></textarea>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">URL</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" ng-model="url" disabled="disabled" id="url" style="width:200px;"></input>
+                                    <input type="text" class="form-control" ng-model="url" disabled="disabled" id="url" style="width:170px;"></input>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
+                                <label class="col-sm-4 control-label" style="text-align:left">方法</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" ng-model="method" disabled="disabled" id="method" style="width:170px;"></input>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">是否异步</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="asn" style="width:200px;">
+                                    <select class="form-control" id="asn" style="width:170px;">
                                         <option value="0">否</option>
                                         <option value="1">是</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <label class="col-sm-4 control-label" style="text-align:left">执行条件</label>
                                 <div class="col-sm-8">
-                                    <input id="condi" type="text" class="form-control" ng-model="condition" style="width:200px;"></input>
+                                    <input id="condi" type="text" class="form-control" ng-model="condition" style="width:170px;"></input>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top:-5px;">
                                 <div class="col-sm-offset-2 col-sm-6">
                                     <button id="savebutton" class="btn btn-default" ng-click="save()">保存</button>
                                 </div>
@@ -474,11 +647,31 @@
                     <div class="tab-pane fade" id="json">
                         <pre id="jsontext"></pre>
                     </div>
+                    <div class="tab-pane fade" id="debug">
+                        <pre id="debuginformation"></pre>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
+
+    <br/>
+    <div style="text-align:center;position: absolute;bottom:0;background-color:#cfd5d6" id="foot">
+        <table style="width:100%;table-layout: fixed;">
+            <tr>
+                <td align="center">&nbsp;</td>
+                <td align="center">
+                    <span style="font-family:arial;">Copyright &copy; 2018 PCN&amp;CAD, BUPT. All rights reserved.</span>
+                </td>
+                <td align="right">
+                    <img src="img/bupt.png" alt="bupt" height="60px;" style="margin-right:20px;">
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
 
 </body>
 

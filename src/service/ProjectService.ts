@@ -1,6 +1,10 @@
 import { DBConnect } from "../util/DBConnect";
 import { ProjectModel } from "../model/ProjectModel";
 import { GeneralResult } from "../general/GeneralResult";
+import {getLogger} from "../util/logger";
+import { Logger } from "_log4js@2.5.3@log4js";
+
+const logger: Logger = getLogger("project");
 class ProjectService {
 
     // 连接数据库
@@ -18,14 +22,17 @@ class ProjectService {
                 projectModel.insert(data, function (err) {
                     if (err) {
                         console.log("INSERT DATA INTO project FAIL!");
+                        logger.error("INSERT DATA INTO project FAIL!\n", err);
                         resolve(new GeneralResult(false, err.message, null));
                     } else {
+                        logger.info("INSERT DATA INTO project SUCCESS!\n", data);
                         console.log("INSERT DATA INTO project SUCCESS!")
                         resolve(new GeneralResult(true, null, data));
                     }
                 });
             }).catch(function (err) {
                 console.log("INSERT DATA INTO project FAIL!");
+                logger.error("INSERT DATA INTO project FAIL!\n", err);                
                 resolve(new GeneralResult(false, err.message, null));
             });
         });
@@ -44,14 +51,17 @@ class ProjectService {
                 projectModel.remove(data, function (err) {
                     if (err) {
                         console.log("DELETE DATA FROM project FAIL!");
+                        logger.error("DELETE DATA FROM project FAIL!", err);
                         resolve(new GeneralResult(false, err.message, null));
                     } else {
                         console.log("DELETE DATA FROM project SUCCESS!");
+                        logger.info("DELETE DATA FROM project SUCCESS!\n", data);
                         resolve(new GeneralResult(true, null, null));
                     }
                 });
             }).catch(function (err) {
                 console.log("DELETE DATA FROM project FAIl!");
+                logger.error("DELETE DATA FROM project FAIL!", err);
                 resolve(new GeneralResult(false, err.message, null));
             });
         });
@@ -61,7 +71,7 @@ class ProjectService {
      * 查询url表中的信息
      * @param data 
      */
-    public async query(data: { [key: string]: string }): Promise<GeneralResult> {
+    public async query(data: { [key: string]: string | string[]}): Promise<GeneralResult> {
         // 传递上下文
         let _this = this;
         return new Promise<GeneralResult>(function (resolve) {
@@ -69,11 +79,16 @@ class ProjectService {
                 let projectModel: ProjectModel = new ProjectModel(db);
                 projectModel.query(data, function (err, results) {
                     if (err) {
+                        logger.error("QUERY DATA FROM project FAIL!\n", err);
                         resolve(new GeneralResult(false, err.message, null));
                     } else {
+                        logger.info("QUERY DATA FROM project SUCCESS!\n", data);
                         resolve(new GeneralResult(true, null, results));
                     }
                 });
+            }).catch((err) => {
+                console.log(err);
+                logger.error("QUERY DATA FROM project FAIL!\n", err);
             });
         })
     }
@@ -100,8 +115,12 @@ class ProjectService {
             if(data.publisher === ""){
                 data.publisher = queryResult.getDatum()[0].publisher;
             }
+            if(data.img === ""){
+                data.img = queryResult.getDatum()[0].img;
+            }
         }
         this.insert([data]);
+        logger.info("UPDATE  SELECTIVE project SUCCESS!\n", data);
     }
 }
 export { ProjectService };

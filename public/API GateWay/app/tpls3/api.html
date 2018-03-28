@@ -1,118 +1,220 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>打开API</title>
-	<script src="../js/angular-1.3.0.js"></script>
-	<script src="../js/angular-animate.js"></script>
-	<script src="../js/angular-ui-router.js"></script>
-	<style>
-		table, tr ,th, td  {
-			border: 0px solid white;
-			border-collapse: collapse;
-			padding: 5px;
-			text-align: center;
-			font-size: 16px;
-		}
-		tr{
-			border:0px solid white;
-		}
-		td{
-			border: 0px;
-			word-wrap:break-word;
-			word-break:break-all;
-		}
-		table tr:nth-child(odd)	{
-			background-color: #f1f1f1;
-		}
-		table tr:nth-child(even) {
-			background-color: #ffffff;
-		}
-		#table1{
-			overflow:hidden;
-			margin:3% auto 0;
-			-moz-border-radius:5px;
-			-webkit-border-radius:5px;
-			border-radius:5px;
-			-moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-			-webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-		}
-		.table-title{
-			height: 30px;
-		}
-	</style>
-</head>
-<body>
-<form name="form">
-	<div class="jumbotron text-center">
-		<div style="margin-top: 40px;margin-bottom: 20px">
-			<h3 class="header" style="margin-left: -550px;display: inline;min-width: 50px">APIS</h3>
-			<a href="#/index/addapi" class="btn-floating btn-large waves-effect waves-light right" style="margin-right: 100px" ng-click="add()">
-				<span class="glyphicon glyphicon-plus"></span>
-			</a>
-		</div>
-		<div class="table-responsive" id="table1">
-			<table class="table">
-				<tr class="table-title">
-					<th style="width: 5%">序号</th>
-					<th style="width: 8%">名字</th>
-					<th style="width: 10%">主机(s)</th>
-					<th style="width: 10%">接口(s)</th>
-					<th style="width: 8%">方法(s)</th>
-					<th style="width: 24%">网址 url</th>
-					<th style="width: 16%">创建时间</th>
-					<th style="width: 19%">操作</th>
-				</tr>
-				<tr class="table-tr" ng-repeat="list in names track by $index">
-					<td>{{ $index + 1 }}</td>
-					<td ng-bind="list.name"></td>
-					<td ng-bind="list.host"></td>
-					<td ng-bind="list.interface"></td>
-					<td ng-bind="list.method"></td>
-					<td><a href="{{'http'}}://{{list.upstreamUrl}}" target="_blank">{{list.upstreamUrl}}</a></td>
-					<td ng-bind="list.time"></td>
-					<td>
-						<a class="btn-floating waves-effect waves-light" ng-click="edit()">
-							<i class="glyphicon glyphicon-edit"></i>
-						</a>
-						<a class="btn-floating waves-effect waves-light blue" href="" ng-click="pluginmng1()">
-							<i class="glyphicon glyphicon-asterisk"></i>
-						</a>
-						<a class="btn-floating waves-effect waves-light red modal-trigger" ng-click="names.splice($index,1)">
-							<i class="glyphicon glyphicon-trash"></i>
-						</a>
-						<a href="#/index/check" class="btn-floating waves-effect waves-light" ng-click="check(list)">
-							<i class="glyphicon glyphicon-tasks"></i>
-						</a>
-					</td>
-				</tr>
-				<!--<tr>-->
-					<!--<td>1</td>-->
-					<!--<td>1</td>-->
-					<!--<td>1</td>-->
-					<!--<td>1</td>-->
-					<!--<td>1</td>-->
-					<!--<td>1</td>-->
-					<!--<td>1</td>-->
-					<!--<td>-->
-						<!--<a class="btn-floating waves-effect waves-light" ng-click="edit()">-->
-							<!--<i class="glyphicon glyphicon-edit"></i>-->
-						<!--</a>-->
-						<!--<a class="btn-floating waves-effect waves-light blue" href="#/apis/{{api.id}}/plugins">-->
-							<!--<i class="glyphicon glyphicon-asterisk"></i>-->
-						<!--</a>-->
-						<!--<a class="btn-floating waves-effect waves-light red modal-trigger" ng-click="showDeleteModal(api.name, api.id)">-->
-							<!--<i class="glyphicon glyphicon-trash"></i>-->
-						<!--</a>-->
-						<!--<a class="btn-floating waves-effect waves-light" ng-click="check()">-->
-							<!--<i class="glyphicon glyphicon-tasks"></i>-->
-						<!--</a>-->
-					<!--</td>-->
-				<!--</tr>-->
-			</table>
-		</div>
-	</div>
-	<div ui-view></div>
-</form>
-</body>
+<html ng-app="APIGateways">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>打开API</title>
+		<link rel="stylesheet" href="../css/bootstrap-3.0.0/css/bootstrap.css">
+		<link rel="stylesheet" href="../css/index.css">
+		<link rel="stylesheet" href="../css/app.min.css">
+		<link rel="stylesheet" href="../css/ngDialog.css">
+		<link rel="stylesheet" href="../css/ngDialog-theme-default.css">
+
+		<script src="../js/projectJs/jquery-1.10.2.min.js"></script>
+		<script src="../js/jquery-3.2.1.js"></script>
+		<script src="../js/projectJs/bootstrap.js"></script>
+		<script src="../js/angular-1.3.0.js"></script>
+		<!--<script src="../js/angular-animate.js"></script>-->
+		<script src="../js/ngDialog.js"></script>
+		<script src="../js/ionic.bundle.min.js"></script>
+		<script src="../controlller.js"></script>
+		<script src="../app.js"></script>
+		<style>
+			table,
+			tr,
+			th,
+			td {
+				border: 0px solid white;
+				border-collapse: collapse;
+				padding: 5px;
+				text-align: center;
+				font-size: 16px;
+			}
+			
+			tr {
+				border: 0px solid white;
+			}
+			
+			td {
+				border: 0px;
+				word-wrap: break-word;
+				word-break: break-all;
+			}
+			
+			table tr:nth-child(odd) {
+				background-color: #f1f1f1;
+			}
+			
+			table tr:nth-child(even) {
+				background-color: #ffffff;
+			}
+			
+			#table1 {
+				overflow: hidden;
+				margin: 3% auto 0;
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+				-moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+				-webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+			}
+			
+			.table-title {
+				height: 30px;
+			}
+			
+			.modal {
+				max-height: 20%;
+				width: 40%;
+			}
+			
+			.modal-backdrop {
+				height: 5px;
+			}
+			#logout{
+				margin-right: 50px;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: #eeeeee;">
+		<form name="form">
+			<div class="jumbotron text-center" ng-controller="UploadCtrl">
+				<div style="margin-top: 40px;margin-bottom: 20px">
+					<h3 class="header" style="margin-left: -65%;display: inline;min-width: 50px">APIS 信息</h3>
+					<button id="logout" class="btn-floating btn-large waves-effect waves-light right" ng-click="logout()">注销</button>
+					<a class="btn-floating btn-large waves-effect waves-light right" style="margin-right: 50px" ng-click="openModal()">
+						<span class="glyphicon glyphicon-plus"></span>
+					</a>
+				</div>
+				<div style="padding: 30px;">
+					<ul id="myTab" class="nav nav-tabs">
+						<li class="active">
+							<a href="#home" data-toggle="tab" ng-bind="AtomicAPI"></a>
+						</li>
+						<li>
+							<a href="#ios" data-toggle="tab" ng-bind="CombinedAPI"></a>
+						</li>
+						<li>
+							<a href="#ios1" data-toggle="tab" ng-bind="LogOutAPI"></a>
+						</li>
+					</ul>
+					<div id="myTabContent" class="tab-content">
+						<div class="tab-pane fade in active" id="home">
+							<table class="tab">
+								<tr class="table-title">
+									<th style="width: 5%">序号</th>
+									<th style="width: 10%">名字</th>
+									<th style="width: 10%;">发布者</th>
+									<th style="width: 10%">接口(s)</th>
+									<th style="width: 8%">方法(s)</th>
+									<th style="width: 27%">网址url</th>
+									<th style="width: 10%">创建时间</th>
+									<th style="width: 20%">操作</th>
+								</tr>
+								<tr class="table-tr" ng-repeat="list0 in names track by $index">
+									<td>{{ $index + 1 }}</td>
+									<td ng-bind="list0.name"></td>
+									<td ng-bind="list0.publisher"></td>
+									<td ng-bind="list0.interface"></td>
+									<td ng-bind="list0.method"></td>
+									<td>
+										<a href="{{'http'}}://{{list.upstreamUrl}}" target="_blank">{{list0.upstreamUrl}}</a>
+									</td>
+									<td>{{list.time | limitTo:10}}</td>
+									<td>
+										<a class="btn-floating waves-effect waves-light" ng-click="editAPI(list0)">
+											<i class="glyphicon glyphicon-edit"></i>
+										</a>
+										<a href="" class="btn-floating waves-effect waves-light red modal-trigger" ng-click="deleteAPI(list0)">
+											<i class="glyphicon glyphicon-trash"></i>
+										</a>
+										<a href="" class="btn-floating waves-effect waves-light" ng-click="check(list0)">
+											<i class="glyphicon glyphicon-tasks"></i>
+										</a>
+									</td>
+								</tr>
+							</table>
+						</div>
+					
+						<div class="tab-pane fade" id="ios">
+							<table class="tab">
+								<tr class="table-title">
+									<th style="width: 5%">序号</th>
+									<th style="width: 10%">名字</th>
+									<th style="width: 10%;">发布者</th>
+									<th style="width: 10%">接口(s)</th>
+									<th style="width: 8%">方法(s)</th>
+									<th style="width: 27%">网址url</th>
+									<th style="width: 10%">创建时间</th>
+									<th style="width: 20%">操作</th>
+								</tr>
+								<tr class="table-tr" ng-repeat="list in datums track by $index">
+									<td>{{ $index + 1 }}</td>
+									<td ng-bind="list.name"></td>
+									<td ng-bind="list.publisher"></td>
+									<td ng-bind="list.interface"></td>
+									<td ng-bind="list.method"></td>
+									<td>
+										<a href="{{'http'}}://{{list.upstreamUrl}}" target="_blank">{{list.upstreamUrl}}</a>
+									</td>
+									<td>{{list.time | limitTo:10}}</td>
+									<td>
+										<a class="btn-floating waves-effect waves-light" ng-click="editAPI(list)">
+											<i class="glyphicon glyphicon-edit"></i>
+										</a>
+										<a href="#/index/queryapi" class="btn-floating waves-effect waves-light red modal-trigger" ng-click="deleteAPI(list)">
+											<i class="glyphicon glyphicon-trash"></i>
+										</a>
+										<a href="#/index/check" class="btn-floating waves-effect waves-light" ng-click="check(list)">
+											<i class="glyphicon glyphicon-tasks"></i>
+										</a>
+									</td>
+								</tr>
+							</table>
+						</div>
+						
+						<div class="tab-pane fade" id="ios1">
+							<table class="tab">
+								<tr class="table-title">
+									<th style="width: 5%">序号</th>
+									<th style="width: 10%">名字</th>
+									<th style="width: 10%;">发布者</th>
+									<th style="width: 10%">接口(s)</th>
+									<th style="width: 8%">方法(s)</th>
+									<th style="width: 27%">网址url</th>
+									<th style="width: 10%">创建时间</th>
+									<th style="width: 20%">操作</th>
+								</tr>
+								<tr class="table-tr" ng-repeat="list in datas track by $index">
+									<td>{{ $index + 1 }}</td>
+									<td ng-bind="list.name"></td>
+									<td ng-bind="list.publisher"></td>
+									<td ng-bind="list.interface"></td>
+									<td ng-bind="list.method"></td>
+									<td>
+										<a href="{{'http'}}://{{list.upstreamUrl}}" target="_blank">{{list.upstreamUrl}}</a>
+									</td>
+									<td>{{list.time | limitTo:10}}</td>
+									<td>
+										<a class="btn-floating waves-effect waves-light" ng-click="editAPI(list)">
+											<i class="glyphicon glyphicon-edit"></i>
+										</a>
+										<a href="#/index/queryapi" class="btn-floating waves-effect waves-light red modal-trigger" ng-click="deleteAPI(list)">
+											<i class="glyphicon glyphicon-trash"></i>
+										</a>
+										<a href="#/index/check" class="btn-floating waves-effect waves-light" ng-click="check(list)">
+											<i class="glyphicon glyphicon-tasks"></i>
+										</a>
+									</td>
+								</tr>
+							</table>
+						</div>
+						
+					</div>
+			</div>
+			</div>
+		</form>
+	</body>
+
 </html>

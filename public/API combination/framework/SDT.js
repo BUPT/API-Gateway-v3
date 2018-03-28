@@ -1,4 +1,4 @@
-var SDT = (function() {
+var SDT = (function () {
     //初始化SVG画布
     if (document.querySelector(".sdt-canvas #sdtDropCanvas")) {
         document.querySelector(".sdt-canvas #sdtDropCanvas").innerHTML = document.querySelector(".sdt-canvas #sdtDropCanvas").innerHTML + '<g id="sdtDropCanvasAll"><g id="sdtDropCanvasRight"></g><g id="sdtDropCanvasLeft"></g></g>';
@@ -27,29 +27,29 @@ var SDT = (function() {
     var eleSeqList = [];
     //右边树
     var SDTTreeRight = {
-            "id": "SDTTreeRight",
-            "objHeight": 0,
-            "childEles": [],
-            "objRelativelyHeight": 0,
-            "objcolumn": 0
-        }
-        //左边树
+        "id": "SDTTreeRight",
+        "objHeight": 0,
+        "childEles": [],
+        "objRelativelyHeight": 0,
+        "objcolumn": 0
+    }
+    //左边树
     var SDTTreeLeft = {
-            "id": "SDTTreeLeft",
-            "objHeight": 0,
-            "childEles": [],
-            "objRelativelyHeight": 0,
-            "objcolumn": 0
-        }
-        //树
+        "id": "SDTTreeLeft",
+        "objHeight": 0,
+        "childEles": [],
+        "objRelativelyHeight": 0,
+        "objcolumn": 0
+    }
+    //树
     var SDTTree = {
-            "id": "SDTTree",
-            "objHeight": 0,
-            "childEles": [SDTTreeRight, SDTTreeLeft],
-            "objRelativelyHeight": 0,
-            "objcolumn": 0
-        }
-        // 元素类型计数表
+        "id": "SDTTree",
+        "objHeight": 0,
+        "childEles": [SDTTreeRight, SDTTreeLeft],
+        "objRelativelyHeight": 0,
+        "objcolumn": 0
+    }
+    // 元素类型计数表
     var typeEleCountList = [];
 
     var dropError = {};
@@ -75,6 +75,8 @@ var SDT = (function() {
         this.objcolumn = 0; //元素列数
         this.leanRight = true; //元素是否默认放置与右边
         this.url = ""; //API的URL
+        this.method = "";//API的方法
+        this.argument = "";//API的参数
         this.asntype = 0; //是否异步
         this.condition = ""; //条件
         this.isfirst = 1;//是否是第一次点击
@@ -172,7 +174,7 @@ var SDT = (function() {
         }
     }
 
-    document.querySelector(".sdt-drag-element-lis").ondragstart = function(event) { //监听 .sdt-drag-element-lis 上的拖拽开始事件 dragstart
+    document.querySelector(".sdt-drag-element-lis").ondragstart = function (event) { //监听 .sdt-drag-element-lis 上的拖拽开始事件 dragstart
         var type;
         if (event.target.dataset.sdtType) {
             type = event.target.dataset.sdtType;
@@ -180,23 +182,25 @@ var SDT = (function() {
         }
         event.dataTransfer.setData("Text", provisionalSDTTreeEle); //事件传递信息设为 provisionalSDTTreeEle
     }
-    document.getElementById("sdtDropCanvas").ondragover = function(event) { //设置画布"sdtDropCanvas"允许放置，阻止对元素的默认处理方式
+    document.getElementById("sdtDropCanvas").ondragover = function (event) { //设置画布"sdtDropCanvas"允许放置，阻止对元素的默认处理方式
         event.preventDefault();
     }
     var idArray = new Array();
-    document.getElementById("sdtDropCanvas").ondrop = function(event) { //监听画布 "sdtDropCanvas" 的 ondrop 放置事件，阻止对元素的默认处理方式（打开链接）
+    document.getElementById("sdtDropCanvas").ondrop = function (event) { //监听画布 "sdtDropCanvas" 的 ondrop 放置事件，阻止对元素的默认处理方式（打开链接）
         event.preventDefault();
         if (provisionalSDTTreeEle) {
             if (provisionalSDTTreeEle.dropSwitch === true) { //如果临时对象的dropSwitch属性为
                 provisionalSDTTreeEle.url = "urlurlurlurlurlurlurl";
                 provisionalSDTTreeEle.asntype = 0;
                 provisionalSDTTreeEle.condition = "conditonconditoncondition";
+                provisionalSDTTreeEle.method = "method";
+                provisionalSDTTreeEle.argument = "argument";
                 provisionalSDTTreeEle.isfirst = 1;
-                typeEleCountList.forEach(function(element) {
+                typeEleCountList.forEach(function (element) {
                     if (element.countType === provisionalSDTTreeEle.type) {
                         provisionalSDTTreeEle.id = provisionalSDTTreeEle.type + (element.countNumber + 1);
                         id = provisionalSDTTreeEle.id;
-                        idArray.push(id)
+                        idArray.push(id);
                         if (provisionalSDTTreeEle.name === "") {
                             provisionalSDTTreeEle.name = provisionalSDTTreeEle.id;
                         } else {
@@ -223,17 +227,21 @@ var SDT = (function() {
                 pushObject(SDTTree, provisionalSDTTreeEle);
                 eleSeqList.push(provisionalSDTTreeEle.id);
                 canvasRepain();
+
+                isroot();
             } else {
                 dropError.dataDropError = provisionalSDTTreeEle.foresideType;
             }
         }
         provisionalSDTTreeEle = null;
+
+        //为每一个元素绑定点击事件
         for (var i = 0; i < idArray.length; i++) {
-            (function() {
+            (function () {
                 //console.log('here')
                 var oob = $('#' + idArray[i]);
                 // oob.unbind();
-                oob.click(function() {
+                oob.click(function () {
                     findnode(oob);
                     //alert(oob.attr('id'))
                 })
@@ -241,11 +249,32 @@ var SDT = (function() {
         }
     }
 
-
+    function isroot(){//判断是否为根节点并隐藏线
+        var Json = SDT.returnTree()[0];
+        function json(jsontree) { //根据id找到相应树节点
+            if ((typeof jsontree == 'object') && (jsontree.constructor == Object.prototype.constructor)) {
+                var arrey = [];
+                arrey.push(jsontree);
+            } else arrey = jsontree;
+            for (var i = 0; i < arrey.length; i++) {
+                var node = arrey[i];
+                if (node.id == "SDTTreeRight") {
+                    if (node.childEles.length == 1) {
+                        $("#sdtDropCanvasAll").find("path:last").attr("display","none");
+                    }
+                    return;
+                }
+                if (node.childEles && node.childEles.length > 0) {
+                    json(node.childEles);
+                }
+            }
+        }
+        json(Json);
+    }
 
     function creatSDTTreeEle(type) { //创建特定type类型的对象
         var typeObj;
-        SDTTreeCollocated.SDTTreeElements.forEach(function(element) {
+        SDTTreeCollocated.SDTTreeElements.forEach(function (element) {
             if (element.type === type) {
                 typeObj = new SDTTreeEle();
                 typeObj.type = element.type;
@@ -256,6 +285,8 @@ var SDT = (function() {
                 typeObj.url = element.url;
                 typeObj.asntype = element.asntype;
                 typeObj.condition = element.condition;
+                typeObj.method = element.method;
+                typeObj.argument = element.argument;
                 typeObj.isfirst = element.isfirst;
             }
         });
@@ -265,7 +296,7 @@ var SDT = (function() {
     function canvasRepain() {
         setObjHeight(SDTTree);
         //清空画布
-        document.querySelectorAll("#sdtDropCanvasRight svg,#sdtDropCanvasLeft svg,.objLine").forEach(function(element) {
+        document.querySelectorAll("#sdtDropCanvasRight svg,#sdtDropCanvasLeft svg,.objLine").forEach(function (element) {
             element.remove();
         });
         draw(SDTTree, SDTTreeCollocated.SDTTreeSet);
@@ -430,8 +461,8 @@ var SDT = (function() {
 
 
     function setDropObject() { //将所有画布上的元素绑定事件
-        document.querySelectorAll("#sdtDropCanvas svg").forEach(function(element) {
-            element.ondragover = function(event) {
+        document.querySelectorAll("#sdtDropCanvas svg").forEach(function (element) {
+            element.ondragover = function (event) {
                 event.preventDefault();
                 if (provisionalSDTTreeEle) {
                     var parentClass = this.getAttribute("class");
@@ -445,7 +476,7 @@ var SDT = (function() {
 
                 }
             };
-            element.ondragleave = function(event) {
+            element.ondragleave = function (event) {
                 event.preventDefault();
                 this.setAttribute('opacity', 1);
                 provisionalSDTTreeEle.dropSwitch = false;
@@ -474,10 +505,10 @@ var SDT = (function() {
             document.addEventListener("mousemove", dragableMousemove);
         }
         document.getElementById('sdtDropCanvas').addEventListener("mousedown", dragableCount, false);
-        document.addEventListener("mouseup", function(event) {
+        document.addEventListener("mouseup", function (event) {
             document.removeEventListener("mousemove", dragableMousemove);
         });
-        document.addEventListener("dragend", function(event) {
+        document.addEventListener("dragend", function (event) {
             document.removeEventListener("mousemove", dragableMousemove);
         });
     }
@@ -487,7 +518,7 @@ var SDT = (function() {
     function canvasBlow() {
         var SDTViewBoxHeight = SDTTreeCollocated.SDTTreeSet.SDTViewBoxHeight;
         var sdtDropCanvasScale = 1;
-        document.querySelector("#sdtDropCanvas").addEventListener("mousewheel", function(event) {
+        document.querySelector("#sdtDropCanvas").addEventListener("mousewheel", function (event) {
             event.preventDefault();
             if (event.wheelDelta > 0) {
                 if (sdtDropCanvasScale < 1.5) {
@@ -501,7 +532,7 @@ var SDT = (function() {
             document.getElementById("sdtDropCanvasAll").setAttribute("transform", "translate(" + (SDTViewBoxHeight / 2) + " " + (SDTViewBoxHeight / 2) + ") scale(" + sdtDropCanvasScale + ") translate(" + -(SDTViewBoxHeight / 2) + " " + -(SDTViewBoxHeight / 2) + ")");
         });
 
-        document.querySelector("#sdtDropCanvas").addEventListener("DOMMouseScroll", function(event) {
+        document.querySelector("#sdtDropCanvas").addEventListener("DOMMouseScroll", function (event) {
             event.preventDefault();
             if (event.detail < 0) {
                 if (sdtDropCanvasScale < 1.5) {
@@ -517,7 +548,7 @@ var SDT = (function() {
     }
 
     return {
-        SVGDragComponent: function(_component) {
+        SVGDragComponent: function (_component) {
             if (_component.SDTTreeSet.lineType) {
                 SDTTreeCollocated.SDTTreeSet.SDTTreeLineType = _component.SDTTreeSet.lineType;
             }
@@ -539,9 +570,9 @@ var SDT = (function() {
                 SDTTreeCollocated.SDTTreeSet.SDTTreeEleHeight = document.querySelector(".sdt-drag-element svg").height.baseVal.value;
                 SDTTreeCollocated.SDTTreeSet.SDTTreeEleHeight = SDTTreeCollocated.SDTTreeSet.SDTTreeEleHeight + SDTTreeCollocated.SDTTreeSet.SDTTreeEleMargin;
             }
-            _component.SDTTreeElements.forEach(function(element) {
+            _component.SDTTreeElements.forEach(function (element) {
                 var _comEle = element;
-                SDTTreeCollocated.SDTTreeElements.forEach(function(element) {
+                SDTTreeCollocated.SDTTreeElements.forEach(function (element) {
                     if (_comEle.type === element.type) {
                         if ("dropSwitch" in _comEle) {
                             if (typeof _comEle.dropSwitch === "string") {
@@ -567,37 +598,37 @@ var SDT = (function() {
                 });
             });
         },
-        returnTree: function(simplify) {
+        returnTree: function (simplify) {
             if (simplify) {
                 var simplifySDTTree = simplifyTree(SDTTree);
 
-                function simplifyTree(rawTree, sTree) {　　　　
-                    var sTree = sTree || {};　　　　
+                function simplifyTree(rawTree, sTree) {
+                    var sTree = sTree || {};
                     for (var i in rawTree) {
                         if (i === "id" || i === "name" || i === "foresideObjId" || i === "childEles" || !isNaN(i)) {
-                            if (typeof rawTree[i] === 'object') {　　　　　　　　
-                                sTree[i] = (Object.prototype.toString.call(rawTree[i]) === '[object Array]') ? [] : {};　　　　　　　　
-                                simplifyTree(rawTree[i], sTree[i]);　　　　　　
-                            } else {　　　　　　　　　
-                                sTree[i] = rawTree[i];　　　　　　
-                            }　　　
-                        }　
-                    }　　　　
-                    return sTree;　　
+                            if (typeof rawTree[i] === 'object') {
+                                sTree[i] = (Object.prototype.toString.call(rawTree[i]) === '[object Array]') ? [] : {};
+                                simplifyTree(rawTree[i], sTree[i]);
+                            } else {
+                                sTree[i] = rawTree[i];
+                            }
+                        }
+                    }
+                    return sTree;
                 }
                 return simplifySDTTree;
             }
             var intTree = [SDTTree, eleSeqList, typeEleCountList];
             return intTree;
         },
-        backCenter: function() {
+        backCenter: function () {
             var dragSVG = document.getElementById("sdtDropCanvas");
             var cs = SDTTreeCollocated.SDTTreeSet
             var minX = cs.SDTViewBoxMinX;
             var minY = cs.SDTViewBoxMinY;
             var vbWi = cs.SDTViewBoxWidth;
             var vbHi = cs.SDTViewBoxHeight;
-            setTimeout(function() {
+            setTimeout(function () {
                 if (minX != 0 || minY != 0) {
                     minX = minX - minX / 4;
                     minY = minY - minY / 4;
@@ -616,9 +647,9 @@ var SDT = (function() {
                 };
             }, 20);
         },
-        removeELe: function(eleList) {
+        removeELe: function (eleList) {
             if (Object.prototype.toString.call(eleList) === '[object Array]') {
-                eleList.forEach(function(element) {
+                eleList.forEach(function (element) {
                     removeObject(SDTTree, element);
                 });
             } else if (eleList === undefined) {
@@ -626,7 +657,7 @@ var SDT = (function() {
             }
             canvasRepain();
         },
-        drawInputTree: function(tree) {
+        drawInputTree: function (tree) {
             SDTTree = tree[0];
             eleSeqList = tree[1];
             typeEleCountList = tree[2];

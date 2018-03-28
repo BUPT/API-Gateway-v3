@@ -1,0 +1,264 @@
+<!doctype html>
+<html ng-app="login">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/bootstrap-3.0.0/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/app.min.css">
+
+    <script src="../js/projectJs/jquery-1.10.2.min.js"></script>
+    <script src="../js/jquery-3.2.1.js"></script>
+    <script src="../js/projectJs/bootstrap.js"></script>
+    <script src="../js/angular.js"></script>
+    <!--<script src="../js/angular-animate.js"></script>-->
+    <script src="../js/ngDialog.js"></script>
+    <script src="../js/ionic.bundle.min.js"></script>
+    <script src="../controlller.js"></script>
+    <script src="../app.js"></script>
+
+    <style>
+    #container{
+        padding: 0;
+        margin: 0;
+    }
+    .row{
+        width: 100% !important;
+        height: 100% !important;
+    }
+    h2{
+        text-align: center;
+    }
+    h3{
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .header{
+        margin-top: -60px;
+    }
+    h5{
+        margin-top: -10px;
+        margin-left: 550px;
+    }
+    input .error{
+        border: 1px solid red;
+    }
+    /*p.error{
+        display: none;
+    }*/
+    p.success{
+        color: green;
+        top:5px;
+        left: -50px;
+    }
+    .input_result{
+        position: relative;
+        top: -27px;
+        left: 100px;
+    }
+    .error{
+        color: red;
+    }
+    .wrapper{
+        width: 80%;
+        height: 80%;
+        margin: 10px  auto;
+        /*background: white;*/
+        padding: 50px;
+        /*box-shadow: 10px 10px 5px #888888;*/
+        border-radius: 10px;
+    }
+    .inner{
+        width: 1000px;
+        margin: 10px auto;
+    }
+    .right{
+        margin-top: 30px;
+        /*border: 1px solid black;*/
+        width: 100%;
+        height: 90%;
+    }
+    #regist{
+        margin-top: 10px;
+        margin-left: 50px;
+    }
+    .item{
+        margin-left: 250px;
+    }
+    .agree{
+        margin-left: 215px;
+    }
+    label{
+        font-size: 20px;
+    }
+        body{
+            background-color: #EEEEEE;
+        }
+</style>
+</head>
+<!--<form name="signUpForm" ng-submit="submitForm()">
+    <div class="form-group">
+        <label>用户名：</label>
+        <input class="form-control"
+               ng-model="username"
+               name="username"
+               ng-disabled="signUpForm.username2.$valid"
+               minlength="4"
+               required="true"
+               ng-class="{'error':signUpForm.username.$invalid && signUpForm.username.$touched}"/>
+    <div ng-if="signUpForm.username.$invalid && signUpForm.username.$touched">您的输入有误请检查</div>
+    <input name="username2"
+           ng-model="username2"
+           required
+           ng-disabled="signUpForm.username.$valid"
+           class="form-control"
+            />
+    </div>
+    <button type="submit" class="btn btn-primary" ng-disabled="signUpForm.$invalid">提交</button>
+</form>-->
+<body ng-controller="loginCtrl">
+<div id="container" class="jumbotron">
+    <!--<h2>中国移动API网关系统</h2>-->
+    <div class="row">
+        <!--<div class="col-sm-7 left">
+
+        </div>-->
+        <div class="col-sm-12 right">
+            <div class="wrapper">
+                <h3 class="header">欢迎注册项目管理员账号</h3>
+                <!--<h5>已有账号，请<a href="login.html">登录</a></h5>-->
+                <div class="inner">
+                    <form name="signUpForm" ng-submit="submitForm1()">
+                        <!--用户名-->
+                        <div class="form-group row" ng-class="{'has-success':signUpForm.username.$valid}">
+                            <label class="col-sm-3 control-label text-right">用户名：</label>
+                            <!--<pre>合法：{{signUpForm.username.$valid}}</pre>
+                            <pre>{{signUpForm.username}}</pre>-->
+                            <div class="col-sm-5">
+                                <input ng-model="userdata.username"
+                                       name="username"
+                                       type="text"
+                                       class="form-control"
+                                       ng-minlength="4"
+                                       ng-maxlength="32"
+                                       required
+                                       placeholder="请输入用户名"
+                                >
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="fa fa-check input_result success" ng-if="signUpForm.username.$valid"></p>
+                                <p class="error" ng-if="signUpForm.username.$error.required && signUpForm.username.$touched">
+                                    用户名不可为空
+                                </p>
+                                <p class="error" ng-if="(signUpForm.username.$error.minlength || signUpForm.username.$error.maxlength)&&signUpForm.username.$touched">
+                                    用户名长度应在4-32位之间
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" ng-class="{'has-success':signUpForm.realname.$valid}">
+                            <label class="col-sm-3 control-label text-right">真实名字：</label>
+                            <div class="col-sm-5">
+                                <input ng-model="userdata.realname"
+                                       name="realname"
+                                       type="text"
+                                       class="form-control"
+                                       ng-minlength="3"
+                                       ng-maxlength="32"
+                                       required
+                                       placeholder="请输入真实名字"
+                                >
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="fa fa-check input_result success" ng-if="signUpForm.realname.$valid"></p>
+                                <p class="error" ng-if="signUpForm.realname.$error.required && signUpForm.realname.$touched">
+                                    用户名不可为空
+                                </p>
+                                <p class="error" ng-if="(signUpForm.realname.$error.minlength || signUpForm.realname.$error.maxlength)&&signUpForm.realname.$touched">
+                                    用户名长度应在4-32位之间
+                                </p>
+                            </div>
+                        </div>
+                         <!--角色-->
+                        <!--<div class="form-group row" ng-class="{'has-success':signUpForm.realname.$valid}">-->
+                            <!--<label class="col-sm-3 control-label text-right">角色：</label>-->
+                            <!--<div class="col-sm-5" >-->
+                                <!--<select ng-model="userdata.currentRole" class="form-control"-->
+                                        <!--ng-options="act for act in roles">-->
+                                <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <div class="form-group row" ng-class="{'has-success':signUpForm.email.$valid}">
+                            <label class="col-sm-3 control-label text-right">邮箱：</label>
+                            <div class="col-sm-5">
+                                <input  type="email" class="form-control" name="email" ng-model="userdata.email" ng-required="true" placeholder="请输入邮箱"/>
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="fa fa-check input_result success" ng-if="signUpForm.email.$valid"></p>
+                                <p class="error" ng-if="signUpForm.email.$error.required && signUpForm.email.$touched">邮箱不能为空</p>
+                                <p class="error" ng-if="signUpForm.email.$error.email">请填写正确的邮箱地址</p>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row" ng-class="{'has-success':signUpForm.password.$valid}">
+                            <label class="col-sm-3 control-label text-right">密码：</label>
+                            <!--<pre>合法：{{signUpForm.password.$valid}}</pre>
+                            <pre>{{signUpForm.password}}</pre>-->
+                            <div class="col-sm-5">
+                                <input ng-model="userdata.password"
+                                       name="password"
+                                       type="password"
+                                       class="form-control"
+                                       ng-minlength="6"
+                                       ng-maxlength="255"
+                                       required
+                                       placeholder="请输入密码"
+                                >
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="fa fa-check input_result success" ng-if="signUpForm.password.$valid"></p>
+                                <p class="error" ng-if="signUpForm.password.$error.required && signUpForm.password.$touched">用户密码不能为空</p>
+                                <p class="error" ng-if="(signUpForm.password.$error.minlength || signUpForm.password.$error.minlength)&&signUpForm.password.$touched">
+                                    密码长度应在6-255位之间
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" ng-class="{'has-success':signUpForm.password2.$valid}">
+                            <label class="col-sm-3 control-label text-right">确认密码：</label>
+                            <!--<pre>合法：{{signUpForm.password2.$valid}}</pre>
+                            <pre>{{signUpForm.password2}}</pre>-->
+                            <div class="col-sm-5">
+                                <input ng-model="userdata.password2"
+                                       name="password2"
+                                       type="password"
+                                       class="form-control"
+                                       compare="userdata.password"
+                                       required="required"
+                                       placeholder="请确认密码"
+                                >
+                            </div>
+                            <div class="col-sm-4">
+                                <p class="fa fa-check input_result success" ng-if="signUpForm.password2.$valid"></p>
+                                <p class="error" ng-if="signUpForm.password2.$error.compare && signUpForm.password2.$touched">两次密码输入不一致</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 item row">
+                            <input  type="checkbox" name="agree" required="required" onclick="if(this.checked)
+							document.getElementById('regist').disabled=false; else document.getElementById('regist').disabled=false;"/><a href="#">《API网关服务条款》</a>
+                        </div>
+                        <div class="form-group row agree">
+                            <button class="btn btn-primary" type="submit" disabled="disabled" id="regist">同意条款并注册</button>
+                        </div>
+                        <!--<div class="form-group row agree">-->
+                            <!--<button class="btn btn-primary" type="submit"  id="regist">注册</button>-->
+                        <!--</div>-->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

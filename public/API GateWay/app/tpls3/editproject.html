@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑API</title>
+    <link rel="stylesheet" href="../css/app.min.css">
+     <style>
+         textarea {
+             height: 30px;
+             font-size: 12px;
+             border: 1px solid;
+             text-align: left;
+         }
+         input {
+             font-size: 12px;
+         }
+
+         .jumbotron{
+             height: 650px;
+         }
+         .ngdialog-content{
+             width: 800px !important;
+             height: 700px !important;
+         }
+
+         a {
+             color: black;
+         }
+    </style>
+</head>
+<body>
+<div class="jumbotron">
+    <h3 class="header">Edit Project</h3>
+
+    <div class="row">
+        <div class="col s5">
+            <div class="card-panel teal">
+                <p class="white-text">
+                    API对象描述了API Gateway公开的API。
+                </p>
+
+                <p class="white-text">
+                    然后，API Gateway需要知道代理请求API的最终目标URL是什么。
+                </p>
+            </div>
+        </div>
+        <form class="col s7">
+            <div>
+                <div class="from-group">
+                    <label for="name">项目名称</label>
+                    <input type="text" id="name" ng-model="name" name="projectName">
+                </div>
+                <div class="from-group">
+                    <label for="introduction">项目简介</label>
+                    <textarea type="text" id="introduction" ng-model="introduction" name="projectDescription"></textarea>
+                </div>
+                <div class="from-group">
+                    <label for="publisher">发布者姓名</label>
+                    <input type="text" id="publisher" ng-model="publisher" name="publisher">
+                </div>
+                <div class="from-group">
+                    <label for="newurl">上传logo图片</label>
+                    <input type="file" id="newurl" name="avatar" multiple>
+                </div>
+            </div>
+            <div class="input-field col s12">
+                <button id="save" type="submit" class="waves-effect waves-light btn right" onclick="doUpload()">
+                    save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

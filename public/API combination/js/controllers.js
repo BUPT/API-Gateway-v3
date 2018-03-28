@@ -1,8 +1,8 @@
 var apiGatewayCtrls = angular.module('apiGatewayCtrls', []);
 
-apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
-    function ($scope, $http, ngDialog) {
-        $scope.title = "可视化API组合系统";
+apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog', '$window',
+    function ($scope, $http, ngDialog, $window) {
+        $scope.title = "API动态组合编排系统";
 
         $scope.file = "文件";
         $scope.file1 = "新建";
@@ -25,7 +25,9 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
 
         $scope.window = "窗口";
         $scope.window1 = "打开新窗口";
-        $scope.window2 = "";
+        $scope.window2 = "关闭窗口";
+        $scope.window3 = "全屏显示";
+        $scope.window4 = "退出全屏";
 
         $scope.help = "帮助";
         $scope.help1 = "Swagger帮助";
@@ -36,6 +38,7 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
             console.log(JSON.stringify(SDT.returnTree()[1]));
             console.log(JSON.stringify(SDT.returnTree()[2]));
             document.getElementById("jsontext").innerHTML = JSON.stringify(SDT.returnTree()[0], null, 2);
+            $('#myTab li:eq(1) a').tab('show');
         };
 
         $scope.outjson = function () { //json格式树导出
@@ -51,7 +54,8 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
         // };
 
         $scope.goback = function () { //撤销
-            SDT.removeELe(); //删除元素，接受一个参数，参数类型为数组，数组元素应为要删除的元素的 id 注: 若不传入参数则删除最近放置的元素            
+            SDT.removeELe(); //删除元素，接受一个参数，参数类型为数组，数组元素应为要删除的元素的 id 注: 若不传入参数则删除最近放置的元素   
+            isroot();
         };
 
         $scope.save = function () { //存储设置
@@ -66,6 +70,7 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
             var input = $("#inputt").val();
             var output = $("#output").val();
             var url = $("#url").val();
+            var method = $("#method").val();
 
             var Json = SDT.returnTree()[0];
 
@@ -83,6 +88,8 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
                         $("#nodeid").children('text').html(node.name);
                         node.url = url;
                         node.isfirst = 0;
+                        node.argument = input;
+                        node.method = method;
                         alert("设置成功！");
                         return;
                     }
@@ -105,7 +112,8 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
                     "response": output,
                     "URL": url,
                     "isAsync": asn,
-                    "condition": condition
+                    "condition": condition,
+                    "method":method
                 }, // 传递数据作为字符串，从前台传到后台  
             }).success(function (data, status, headers, config) { //这里的data，就是后台传递过来的数据jsonArray  
                 if (data.result == true) {
@@ -119,38 +127,95 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
         };
 
         $scope.register = function () { //点击注册
-            ngDialog.open({
-                template: 'register.html',
-                className: 'ngdialog-theme-default',
-                controller: function ($scope) {
-                    $scope.show = function () {
-                        $scope.closeThisDialog(); //关闭弹窗
-                    };
-                    $scope.registeryes = function () {
-                        $http({
-                            method: 'post',
-                            url: 'http://www.linyimin.club:8001/apis/registerCombinationAPI',
-                            params: {
-                                "name": $scope.r_name,
-                                "ID": $scope.r_id,
-                                "argument": $scope.r_input,
-                                "response": $scope.r_output,
-                                "combinationUrl": $scope.r_url,
-                                "flowJson": JSON.stringify(SDT.returnTree()[0], null, 2)
-                            }, // 传递数据作为字符串，从前台传到后台  
-                        }).success(function (data, status, headers, config) { //这里的data，就是后台传递过来的数据jsonArray  
-                            if (data.result == true) {
-                                alert("注册成功！");
-                                $scope.closeThisDialog(); //关闭弹窗
-                            } else {
-                                alert(data.reason);
-                            }
-                        }).error(function (data, status, headers, config) {
-                            alert("错误");
-                        });
+            $http({
+                method: 'get',
+                url: 'http://www.linyimin.club:8001/apis/getAllAtomApiArgument',
+                params: {}, // 传递数据作为字符串，从前台传到后台  
+            }).success(function (dataa, status, headers, config) { //这里的data，就是后台传递过来的数据jsonArray  
+                ngDialog.open({
+                    template: 'register.html',
+                    className: 'ngdialog-theme-default',
+                    controller: function ($scope) {
+                        $scope.r_input = dataa;
+                        $scope.show = function () {
+                            $scope.closeThisDialog(); //关闭弹窗
+                        };
+                        $scope.registeryes = function () {
+                            $http({
+                                method: 'post',
+                                url: 'http://www.linyimin.club:8001/apis/registerCombinationAPI',
+                                params: {
+                                    "name": $scope.r_name,
+                                    "ID": $scope.r_id,
+                                    "argument": $scope.r_input,
+                                    "response": $scope.r_output,
+                                    "combinationUrl": $scope.r_url,
+                                    "flowJson": JSON.stringify(SDT.returnTree()[0], null, 2),
+                                    "method":$("#methods option:selected").val()
+                                }, // 传递数据作为字符串，从前台传到后台  
+                            }).success(function (data, status, headers, config) { //这里的data，就是后台传递过来的数据jsonArray  
+                                if (data.result == true) {
+                                    alert("注册成功！");
+                                    $scope.closeThisDialog(); //关闭弹窗
+                                    //alert(JSON.parse(JSON.stringify(SDT.returnTree()[0], null, 2)));
+    
+                                    function json(jsontree) { //遍历树
+                                        if ((typeof jsontree == 'object') && (jsontree.constructor == Object.prototype.constructor)) {
+                                            var arrey = [];
+                                            arrey.push(jsontree);
+                                        } else arrey = jsontree;
+                                        for (var i = 0; i < arrey.length; i++) {
+                                            var node = arrey[i];
+                                            //node.isfirst = 2;
+                                            (function () {
+                                                var oob = $('#' + node.id);
+                                                oob.click(function () {
+                                                    shownodeattr2(oob);
+                                                    //alert(oob.attr('id'))
+                                                })
+                                            })();
+                                            if (node.childEles && node.childEles.length > 0) {
+                                                json(node.childEles);
+                                            }
+                                        }
+                                    }
+                                    json(JSON.parse(JSON.stringify(SDT.returnTree()[0], null, 2))); //json格式
+    
+                                    function shownodeattr2(oob) {
+                                        function json(jsontree) { //根据id找到相应树节点
+                                            if ((typeof jsontree == 'object') && (jsontree.constructor == Object.prototype.constructor)) {
+                                                var arrey = [];
+                                                arrey.push(jsontree);
+                                            } else arrey = jsontree;
+                                            for (var i = 0; i < arrey.length; i++) {
+                                                var node = arrey[i];
+                                                //node.isfirst = 2;
+                                                if (node.id == oob.attr('id')) {
+                                                    shownodeattr1(node, oob, $scope.r_url);
+                                                    return;
+                                                }
+                                                if (node.childEles && node.childEles.length > 0) {
+                                                    json(node.childEles);
+                                                }
+                                            }
+                                        }
+                                        json(JSON.parse(JSON.stringify(SDT.returnTree()[0], null, 2))); 
+                                    }
+    
+    
+                                } else {
+                                    alert(data.reason);
+                                }
+                            }).error(function (data, status, headers, config) {
+                                alert("错误");
+                            });
+                        }
                     }
-                }
+                });
+            }).error(function (data, status, headers, config) {
+                alert("错误");
             });
+            
         };
 
         $scope.debug = function () { //点击调试
@@ -169,23 +234,32 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
                                 "url": $scope.d_url
                             }, // 传递数据作为字符串，从前台传到后台  
                         }).success(function (data, status, headers, config) { //这里的data，就是后台传递过来的数据jsonArray  
-                            // if (data.result == false) {
-                            //     alert("见控制台处信息");
-                            $scope.debuginformation = data.result;
-                            // } else {
-                            //     alert(data.reason);
-                            // }
+                            if (data.result == true) {
+                               // alert("成功");
+                                $scope.closeThisDialog(); //关闭弹窗
+                                document.getElementById("debuginformation").innerHTML= "成功！<br/><br/>"+JSON.stringify(data.datum,null, 2);
+                                //$scope.debuginformation = data.result;
+                                $('#myTab li:eq(2) a').tab('show');
+                            }
+                            else {
+                                //alert("失败");
+                                $scope.closeThisDialog(); //关闭弹窗
+                                if(data.reason == null){
+                                    document.getElementById("debuginformation").innerHTML= "失败！<br/><br/>"+JSON.stringify(data.datum,null, 2);
+                                }
+                                else{
+                                    document.getElementById("debuginformation").innerHTML= "失败！<br/><br/>"+data.reason;
+                                }
+                               
+                                //$scope.debuginformation = data.result;
+                                $('#myTab li:eq(2) a').tab('show');
+                            }
                         }).error(function (data, status, headers, config) {
-                            alert("true");
-                            $scope.debuginformation = data.result;
+                            alert("错误");
                         });
                     }
                 }
             });
-        };
-
-        $scope.newwindow = function () {//打开新窗口
-            window.open("index.html");
         };
 
         $scope.lookall = function () {//查看所有组合API
@@ -259,7 +333,7 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
                                 }).success(function (data, status, headers, config) { //这里的data，就是后台传递过来的数据jsonArray  
                                     if (data.result == true) {
                                         alert("修改成功！");
-                                        $($event.target).parent().parent().children('td').eq(1).children('input').val(data.datum[0].URL);
+                                        $($event.target).parent().parent().children('td').eq(1).children('input').val(newname);
                                         $($event.target).parent().parent().children('td').eq(1).children('input').attr("disabled", "disabled");
                                     }
                                     else {
@@ -306,64 +380,18 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
                             $scope.datas = combination_r;
 
                             $scope.open = function (item, $event, index) {//点击打开
-                                // var intTree = { "id": "SDTTree", "objHeight": 0, "childEles": [{ "id": "SDTTreeRight", "objHeight": 3, "childEles": [{ "type": "CallControl", "dropSwitch": true, "foresideType": ["all"], "id": "CallControl1", "name": "呼叫事件订阅接口", "foresideObjId": "SDTTreeRight", "objHeight": 2, "childEles": [{ "type": "Message", "dropSwitch": true, "foresideType": ["all"], "id": "Message1", "name": "SendMessage", "foresideObjId": "CallControl1", "objHeight": 1, "childEles": [], "objRelativelyHeight": -1, "objcolumn": 2, "leanRight": true, "url": "/oneapi/sms/SendMessage", "asntype": "0", "condition": "345", "isfirst": 0 }, { "type": "CallControl", "dropSwitch": true, "foresideType": ["all"], "id": "CallControl2", "name": "notifyCallEvent", "foresideObjId": "CallControl1", "objHeight": 1, "childEles": [], "objRelativelyHeight": 0, "objcolumn": 2, "leanRight": true, "url": "/voice/notifyCallEvent", "asntype": "0", "condition": "567", "isfirst": 0 }], "objRelativelyHeight": -0.5, "objcolumn": 1, "leanRight": true, "url": "/subscriptions/callevents/notifications", "asntype": "0", "condition": "123", "isfirst": 0 }, { "type": "NumberChange", "dropSwitch": true, "foresideType": ["all"], "id": "NumberChange1", "name": "NumberAdd", "foresideObjId": "SDTTreeRight", "objHeight": 1, "childEles": [], "objRelativelyHeight": 1, "objcolumn": 1, "leanRight": true, "url": "/callconfig/NumberAdd", "asntype": "0", "condition": "123", "isfirst": 0 }], "objRelativelyHeight": 0, "objcolumn": 0 }, { "id": "SDTTreeLeft", "objHeight": 0, "childEles": [], "objRelativelyHeight": 0, "objcolumn": 0 }], "objRelativelyHeight": 0, "objcolumn": 0 };
-                                // var str_intTree = '[' + JSON.stringify(intTree) + ']';
-                                // SDT.drawInputTree(JSON.parse(str_intTree)); //重绘树，接受一个参数，参数类型为完整树 ，调用后会清空目标画布，并立即重绘
-                                // function json(jsontree) { //遍历树
-                                //     if ((typeof jsontree == 'object') && (jsontree.constructor == Object.prototype.constructor)) {
-                                //         var arrey = [];
-                                //         arrey.push(jsontree);
-                                //     } else arrey = jsontree;
-                                //     for (var i = 0; i < arrey.length; i++) {
-                                //         var node = arrey[i];
-                                //         (function () {
-                                //             var oob = $('#' + node.id);
-                                //             oob.click(function () {
-                                //                 shownodeattr(oob);
-                                //             })
-                                //         })();
-                                //         if (node.childEles && node.childEles.length > 0) {
-                                //             json(node.childEles);
-                                //         }
-                                //     }
-                                // }
-                                // json(intTree);
-                                // $scope.closeThisDialog();
-
-                                // function shownodeattr(oob) {//显示打开的组合api中某个原子api的属性
-                                //     alert(oob.attr('id'));
-                                //     var Json = SDT.returnTree()[0];
-
-                                //     function json(jsontree) { //根据id找到相应树节点
-                                //         if ((typeof jsontree == 'object') && (jsontree.constructor == Object.prototype.constructor)) {
-                                //             var arrey = [];
-                                //             arrey.push(jsontree);
-                                //         } else arrey = jsontree;
-                                //         for (var i = 0; i < arrey.length; i++) {
-                                //             var node = arrey[i];
-                                //             if (node.id == oob.attr('id')) {
-                                //                 shownodeattr1(node, oob);
-                                //                 return;
-                                //             }
-                                //             if (node.childEles && node.childEles.length > 0) {
-                                //                 json(node.childEles);
-                                //             }
-                                //         }
-                                //     }
-                                //     json(intTree);
-                                // }
-
                                 $http({
                                     method: 'get',
-                                    url: 'http://www.linyimin.club:8001',
+                                    url: 'http://www.linyimin.club:8001/apis/getCombinationAPIFlow',
                                     params: {
-                                        "url": item.URL,
-                                        "username": ''
+                                        "combinationUrl": item.URL,
+                                        "publisher": ''
                                     }, // 传递数据作为字符串，从前台传到后台  
                                 }).success(function (data, status, headers, config) { //这里的data，就是后台传递过来的数据jsonArray  
                                     if (data.result == true) {
-                                        var intTree = data.datum.flow;//注意问一下返回的是json还是字符串！！！！！！！！！！！！！！
-                                        var str_intTree = '[' + JSON.stringify(intTree) + ']';
+                                        var intTree = data.datum;//返回字符串
+                                        var json_intTree = JSON.parse(intTree);//转为json格式
+                                        var str_intTree = '[' + intTree + ']';
                                         SDT.drawInputTree(JSON.parse(str_intTree)); //重绘树，接受一个参数，参数类型为完整树 ，调用后会清空目标画布，并立即重绘
                                         $scope.closeThisDialog();
 
@@ -386,7 +414,9 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
                                                 }
                                             }
                                         }
-                                        json(intTree); //这里的inTree需要是json格式！！！！！！！！！！！！！！
+                                        json(json_intTree); //json格式
+
+                                        isroot();
 
                                         function shownodeattr(oob) {//显示打开的组合api中某个原子api的属性 
                                             function json(jsontree) { //根据id找到相应树节点
@@ -405,7 +435,7 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
                                                     }
                                                 }
                                             }
-                                            json(intTree);
+                                            json(json_intTree);
                                         }
                                     }
                                     else {
@@ -427,7 +457,82 @@ apiGatewayCtrls.controller('StartCtrl', ['$scope', '$http', 'ngDialog',
             }).error(function (data, status, headers, config) {
                 alert("错误");
             });
-        }
+        };
+
+        $scope.newwindow = function () {//打开新窗口
+            window.open("index.html");
+        };
+
+        $scope.systemClose = function () {//关闭窗口
+            if (confirm("您确定要关闭该窗口吗？")) {
+                //$window.close();
+                //window.location.href = "about:blank";
+                if (navigator.userAgent.indexOf("Firefox") != -1 || navigator.userAgent.indexOf("Chrome") != -1) {
+                    window.location.href = "about:blank";
+                    window.close();
+                } else {
+                    window.opener = null;
+                    window.open("", "_self");
+                    window.close();
+                }
+            }
+        };
+
+        $scope.fullScreen = function () {//全屏显示
+            var obj = document.getElementById("navnav");
+            obj.style.cssText = "background-color: #1e79a9;height:60px;    margin-bottom: 60px;";
+            var foot = document.getElementById('foot');
+            foot.style.cssText = "text-align:center;background-color:#cfd5d6;position: absolute; bottom:0;";
+            var docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            }
+            else if (docElm.msRequestFullscreen) {
+                docElm = document.body; //overwrite the element (for IE)
+                docElm.msRequestFullscreen();
+            }
+            else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            }
+            else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            }
+        };
+
+        $scope.exitScreen = function () {//退出全屏
+            var obj = document.getElementById("navnav");
+            obj.style.cssText = "background-color: #1e79a9;height:60px;    margin-bottom: 40px;";
+            var foot = document.getElementById('foot');
+            foot.style.cssText = "text-align:center;position: absolute;bottom:0;background-color:#cfd5d6;";
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            }
+            else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        };
+
+        $scope.howtouse = function () {//使用说明
+            ngDialog.open({
+                template: 'howtouse.html',
+                className: 'ngdialog-theme-default',
+                width: 1100,
+                appendClassName: 'upup' ,
+                controller: function ($scope) {
+                    $scope.show = function () {
+                        $scope.closeThisDialog(); //关闭弹窗
+                    };
+                }
+            });
+
+        };
+
 
     }
 ]);
