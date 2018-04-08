@@ -1,4 +1,5 @@
 import express = require("express");
+import {MyMongoose} from "../util/GetConnectedMongoose"
 import {LogModel} from "../model/LogModel";
 import fs = require("fs");
 import {TopPerformanceModel} from "../model/TopPerformanceModel";
@@ -13,6 +14,37 @@ class PerformanceService{
      */
     public logPerformanceToFile(log:LogModel):void{
         fs.appendFileSync(path.join(__dirname, "../../performanceFile/logPerformance.txt"),log.getAll()+'\n');
+    }
+    /**
+     * 日志存放入mongodb中
+     * @param 
+     */
+    public async logPerformanceInsert(log:LogModel):Promise<any>{
+        var mongoose:any = await MyMongoose.getMongoose();
+        var Schema =mongoose.Schema;
+        var logSchema = new Schema({
+            classes:String,
+            username:String,
+            ip: String,
+            // comments: [{ body: String, date: Date }],
+            time: { type: Date, default: Date.now },
+            device: String,
+            service:String,
+            status:String,
+            responseTime:Date,
+        });
+        var logModel = mongoose.model('logModel',logSchema);
+        var doc = new logModel({
+            classes:log.classes,
+            time:log.time,
+            username:log.username,
+            ip: log.ip,
+            device: log.device,
+            service:log.service,
+            status:log.status,
+            responseTime:log.responseTime,
+        })
+        doc.save();
     }
 
      /**

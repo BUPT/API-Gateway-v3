@@ -4,14 +4,14 @@
  */
 class LogModel {
     private _ID:String='0';
-    private _time:String='';
+    private _time:Date=null;
     private _username:String='';
     private _classes:String='';
     private _ip:String = ''
     private _device:String='';
     private _service:String='';
     private _status:String='';
-    private _responseTime:String='';
+    private _responseTime:Date=null;
 
     constructor() {
        
@@ -22,32 +22,58 @@ class LogModel {
     public get(): any {
         return [this._ID,this._time,this._username,this._classes,this._ip,this._device,this._service,this._status,this._responseTime];
     }
-
+    get ID(){
+        return this._ID;
+    }
     set ID(id:String){
         this._ID = id;
     }
-    set time(time:String){
+    get time(){
+        return this._time;
+    }
+    set time(time:Date){
         this._time  =time;
+    }
+    get username(){
+        return this._username;
     }
     set username(name:String){
         this._username = name;
     }
+    get classes(){
+        return this._classes;
+    }
     set classes(classes:String) {
         this._classes = classes;
+    }
+    get ip(){
+        return this._ip;
     }
     set ip(ip:String){
         this._ip = ip;
     }
+    get device(){
+        return this._device;
+    }
     set device(device:String){
         this._device = device;
+    }
+    get service(){
+        return this._service;
     }
     set service(service:String){
         this._service = service;
     }
+    get status(){
+        return this._status;
+    }
     set status(status:String){
         this._status = status;
     }
-    set responseTime(responseTime:String){
+    get responseTime(){
+        return this._responseTime;
+    }
+    set responseTime(responseTime:Date){
         this._responseTime= responseTime;
     }
 

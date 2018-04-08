@@ -41,13 +41,15 @@ class PerformanceMonitorPlugin{
             logModel.username = 'null';
             logModel.classes = 'null';
         }
-        logModel.time = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');
+        // logModel.time = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');
+        logModel.time = new Date();
         logModel.ip = GetIP.getClientIP(req);
         logModel.status = 'succeed';        //默认为成功
         logModel.service = req.originalUrl;
         logModel.device = req.rawHeaders[5];
         req.on('end',function(){
-            logModel.responseTime = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss'); 
+            // logModel.responseTime = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss'); 
+            logModel.responseTime =new Date(); 
             // console.log(logModel.get())           
         }).on('error',function(){
             logModel.status = 'error'
@@ -55,6 +57,7 @@ class PerformanceMonitorPlugin{
         })
         let performanceService :PerformanceService= new PerformanceService();
         performanceService.logPerformanceToFile(logModel);
+        performanceService.logPerformanceInsert(logModel);
         // fs.writeFileSync('req',util.inspect(req,{depth:null})); //depth:null 展开全部层级
         next();
     }
