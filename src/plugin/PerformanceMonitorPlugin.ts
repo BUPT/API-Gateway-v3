@@ -41,13 +41,15 @@ class PerformanceMonitorPlugin{
             logModel.username = 'null';
             logModel.classes = 'null';
         }
-        logModel.time = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');
+        // logModel.time = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');
+        logModel.time = new Date();
         logModel.ip = GetIP.getClientIP(req);
         logModel.status = 'succeed';        //默认为成功
         logModel.service = req.originalUrl;
         logModel.device = req.rawHeaders[5];
         req.on('end',function(){
-            logModel.responseTime = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss'); 
+            // logModel.responseTime = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss'); 
+            logModel.responseTime =new Date(); 
             // console.log(logModel.get())           
         }).on('error',function(){
             logModel.status = 'error'
@@ -55,6 +57,7 @@ class PerformanceMonitorPlugin{
         })
         let performanceService :PerformanceService= new PerformanceService();
         performanceService.logPerformanceToFile(logModel);
+        performanceService.logPerformanceInsert(logModel);
         // fs.writeFileSync('req',util.inspect(req,{depth:null})); //depth:null 展开全部层级
         next();
     }
@@ -91,6 +94,8 @@ class PerformanceMonitorPlugin{
         })
         //每次访问就写入文件一次
         new PerformanceService().topPerformanceToFile();
+        let performanceService :PerformanceService= new PerformanceService();
+        performanceService.topPerformanceInsert();
         next();
     }
 
@@ -115,21 +120,27 @@ class PerformanceMonitorPlugin{
         SoursePerformance.unitTimeTotleVisit++;
         SoursePerformance.concurrentVolume++;
         SoursePerformance.serverName = serverName;
+
         SoursePerformanceModel._soursePerformanceMap.set(serverName,SoursePerformance);
 
         req.on('end',function(){
             SoursePerformanceModel._soursePerformanceMap.get(serverName).concurrentVolume--;
+            SoursePerformance.concurrentVolume = SoursePerformance.concurrentVolume--;
             let responseTime = new Date();      
             //这里得到的时间是毫秒为单位
             let time = (responseTime.getTime() - visitTime.getTime());     
-            SoursePerformanceModel._soursePerformanceMap.get(serverName).averageResponseTime  =(SoursePerformanceModel._soursePerformanceMap.get(serverName).averageResponseTime*(SoursePerformanceModel._soursePerformanceMap.get(serverName).unitTimeTotleVisit-1)+time)/SoursePerformanceModel._soursePerformanceMap.get(serverName).unitTimeTotleVisit; 
+            SoursePerformance.averageResponseTime  =(SoursePerformanceModel._soursePerformanceMap.get(serverName).averageResponseTime*(SoursePerformanceModel._soursePerformanceMap.get(serverName).unitTimeTotleVisit-1)+time)/SoursePerformanceModel._soursePerformanceMap.get(serverName).unitTimeTotleVisit; 
+            SoursePerformanceModel._soursePerformanceMap.get(serverName).averageResponseTime = SoursePerformance.averageResponseTime;
         }).on('error',function(){
+            SoursePerformance.concurrentVolume = SoursePerformance.concurrentVolume--;
             SoursePerformanceModel._soursePerformanceMap.get(serverName).concurrentVolume--;
         })
         SoursePerformanceModel._soursePerformanceMap.forEach(function(value,key,map){
             console.log(key+' value= '+value.totleVisit+' '+value.unitTimeTotleVisit+' '+value.concurrentVolume+' '+value.averageResponseTime)
         })
         new PerformanceService().SoursePerformanceToFile();
+        let performanceService :PerformanceService= new PerformanceService();
+        performanceService.SoursePerformanceInsert(SoursePerformance);
         next();
     }
 

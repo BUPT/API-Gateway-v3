@@ -1,5 +1,0 @@
-
-  serverName:www.linyimin.club:10010/bookTo  totleVisit: 2  unitTimeTotleVisit:2  concurrentVolume:0  averageResponseTime:0
-  serverName:www.linyimin.club:10010/bookBack  totleVisit: 1  unitTimeTotleVisit:1  concurrentVolume:0  averageResponseTime:0
-  serverName:www.linyimin.club:10010/refundTo  totleVisit: 1  unitTimeTotleVisit:1  concurrentVolume:0  averageResponseTime:0
-  serverName:www.linyimin.club:10010/bookTo?username=chenyuanxing&pwd=chen  totleVisit: 1  unitTimeTotleVisit:1  concurrentVolume:1  averageResponseTime:0

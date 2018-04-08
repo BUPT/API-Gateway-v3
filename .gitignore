@@ -74,3 +74,5 @@ test
 .vscode
 
 performanceFile
+
+src/config/

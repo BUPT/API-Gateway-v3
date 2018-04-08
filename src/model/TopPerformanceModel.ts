@@ -1,7 +1,7 @@
 /**
  * 定义整个一级网关能力平台监测的模型
  * 总访问次数，单位时间总访问次数，并发数，cpu memory iops监控，均响应时间
- * 
+ * 其中各种list是用存储然后于前段展示使用
  */
 class TopPerformanceModel {
     static topPerformance:TopPerformanceModel = new TopPerformanceModel();
