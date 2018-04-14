@@ -2,7 +2,7 @@ import { DBConnect } from "../util/DBConnect";
 import { CombinationFlowModel } from "../model/CombinationFlowModel";
 import { GeneralResult } from "../general/GeneralResult";
 import { getLogger } from "../util/logger";
-import { Logger } from "_log4js@2.5.3@log4js";
+import { Logger } from "log4js";
 const logger: Logger = getLogger("combinationFlow");
 class CombinationFlowService {
 	// 连接数据库

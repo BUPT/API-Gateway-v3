@@ -10,12 +10,12 @@ class MyMongoose{
         return new Promise((resolve,reject)=>{
             mongoose.connect(DB_URL, function(err) {
                 if(err){
-                    console.log("mongodb连接失败 connected error");
+                    // console.log("mongodb连接失败 connected error");
                     logger.error('mongodb连接失败 connected error ',err)
                     reject(err)
                 }else{
                     MyMongoose.tag = 1;
-                    console.log("mongodb连接成功 connected success");
+                    // console.log("mongodb连接成功 connected success");
                     logger.info('mongodb连接成功 connected success ',err)
                     resolve(1);
                 }
@@ -34,7 +34,7 @@ class MyMongoose{
                 console.log("mongodb数据库连上了");
                 return mongoose;
             }else{
-                console.log("mongodb数据库连不上了 connected fail");
+                // console.log("mongodb数据库连不上了 connected fail");
                 logger.error('mongodb数据库连不上了 ')
                 return null;
             }

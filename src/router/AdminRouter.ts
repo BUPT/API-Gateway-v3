@@ -5,7 +5,7 @@ import {AdminPlugin} from "../plugin/AdminPlugin";
 import {UserPlugin} from "../plugin/UserPlugin";
 import {RegisterPlugin} from "../plugin/RegisterPlugin";
 import { Config } from "../config/config";
-
+import {RateLimitingPlugin} from "../plugin/RateLimitingPlugin"
 import {CombinationPlugin} from "../plugin/CombinationPlugin";
 
 import {PerformanceMonitorPlugin} from "../plugin/PerformanceMonitorPlugin";
@@ -26,12 +26,15 @@ class AdminRouter{
 
         let performanceMonitor:PerformanceMonitorPlugin = new PerformanceMonitorPlugin();
 
+        let rateLimitingPlugin:RateLimitingPlugin = new RateLimitingPlugin();
         // 允许跨域访问
         this._router.all('*', adminPlugin.allowCORSAccess);
         //性能监控
         this._router.all('*',performanceMonitor.logPerformanceMonitor);
         //一级能力平台监控
         this._router.all('*',performanceMonitor.topPerformanceMonitor);
+        //限速
+        this._router.all('*',rateLimitingPlugin.RateLimiting);
         //一级监控数据
         this._router.all('/viewTopPerformance',performanceMonitor.viewTopPerformance);
         //api这一级监控数据的所有api名称

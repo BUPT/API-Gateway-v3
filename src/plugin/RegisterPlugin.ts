@@ -46,7 +46,7 @@ class RegisterPlugin {
 				data.set(url[i].from, value);
 				let performanceMonitorPlugin: PerformanceMonitorPlugin = new PerformanceMonitorPlugin();
 				performanceMonitorPlugin.soursePerformanceHost = url[i].to;
-				RegisterPlugin._registerApp.use(url[i].from, performanceMonitorPlugin.soursePerformanceMonitor.bind(performanceMonitorPlugin), proxy(url[i].to, {
+				RegisterPlugin._registerApp.use(url[i].from, performanceMonitorPlugin.soursePerformanceMonitor.bind(performanceMonitorPlugin),proxy(url[i].to, {
 					proxyReqPathResolver: function (req) {
 						return req.originalUrl;
 					}

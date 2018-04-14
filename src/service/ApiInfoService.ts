@@ -4,7 +4,7 @@ import { GeneralResult } from "../general/GeneralResult";
 import { appendFile } from "fs";
 import { CombinationService } from "../service/CombinationService"
 import { getLogger } from "../util/logger"
-import { Logger } from "_log4js@2.5.3@log4js";
+import { Logger } from "log4js";
 
 const logger: Logger = getLogger("apiInfo");
 class ApiInfoService {
